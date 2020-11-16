@@ -4,12 +4,12 @@
 [![](https://jitpack.io/v/BenShanYang/AndroidXTools.svg)](https://jitpack.io/#BenShanYang/AndroidXTools)
 
  <br>
- allprojects {   
-     repositories {   
- 		      ...   
- 		      maven { url 'https://jitpack.io' }   
- 	   }   
- }  
+ >allprojects {   
+ >>repositories {   
+ >>>...   
+ >>>maven { url 'https://jitpack.io' }   
+ >>}   
+ >}  
  </br>
  <br>
  dependencies {   
