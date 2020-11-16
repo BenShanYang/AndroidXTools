@@ -10,6 +10,6 @@ allprojects {<br/>
 </br>
 <br>
 dependencies {<br/>
- 	 implementation 'com.github.BenShanYang:AndroidXTools:Tag'<br/>
+ 	 implementation 'com.github.BenShanYang:AndroidXTools:1.0.0'<br/>
 }
 </br>
