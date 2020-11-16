@@ -3,17 +3,15 @@
 
 [![](https://jitpack.io/v/BenShanYang/AndroidXTools.svg)](https://jitpack.io/#BenShanYang/AndroidXTools)
 
- <br>
- >allprojects {   
- >>repositories {   
- >>>...   
- >>>maven { url 'https://jitpack.io' }   
- >>}   
- >}  
- </br>
- <br>
- dependencies {   
-  	  implementation 'com.github.BenShanYang:AndroidXTools:1.0.0'   
- }  
- </br>
+
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+    implementation 'com.github.BenShanYang:AndroidXTools:1.0.0'
+}  
 
