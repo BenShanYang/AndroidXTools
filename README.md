@@ -5,13 +5,13 @@
 
 
  allprojects { 
- 	repositories { 
- 		... 
- 		maven { url 'https://jitpack.io' } 
- 	} 
+     repositories { 
+ 		      ... 
+ 		      maven { url 'https://jitpack.io' } 
+ 	   } 
  }
  
  dependencies { 
-  	 implementation 'com.github.BenShanYang:AndroidXTools:1.0.0' 
+  	  implementation 'com.github.BenShanYang:AndroidXTools:1.0.0' 
  }
 
