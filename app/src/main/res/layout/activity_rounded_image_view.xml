@@ -93,6 +93,29 @@
                     app:borderWidth="2dp"
                     app:isOval="true" />
             </FrameLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_50" />
+
+            <FrameLayout
+                android:layout_width="@dimen/dimen_250"
+                android:layout_height="wrap_content">
+
+                <com.benshanyang.toolslibrary.widget.RoundImageView
+                    android:id="@+id/image_6"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="left"
+                    android:src="@mipmap/xiaoxin"
+                    app:borderColor="#FF7F24"
+                    app:borderWidth="2dp"
+                    app:cornerTopLeftRadius="@dimen/dimen_10"
+                    app:cornerTopRightRadius="@dimen/dimen_10"
+                    app:maskColor="#33FF0000"
+                    app:selectedBorderColor="@android:color/holo_red_dark"
+                    app:selectedBorderWidth="@dimen/dimen_1" />
+            </FrameLayout>
         </LinearLayout>
     </FrameLayout>
 

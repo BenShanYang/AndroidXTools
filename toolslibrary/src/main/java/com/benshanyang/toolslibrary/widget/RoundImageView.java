@@ -106,7 +106,7 @@ public class RoundImageView extends AppCompatImageView {
         mSelectedBorderColor = ta.getColor(R.styleable.RoundImageView_selectedBorderColor, mBorderColor);
         mSelectedMaskColor = ta.getColor(R.styleable.RoundImageView_maskColor, Color.TRANSPARENT);
         if (mSelectedMaskColor != Color.TRANSPARENT) {
-            mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.DARKEN);
+            mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.SRC_ATOP);
         }
         mIsTouchSelectModeEnabled = ta.getBoolean(R.styleable.RoundImageView_touchSelectModeEnabled, true);
         mIsCircle = ta.getBoolean(R.styleable.RoundImageView_isCircle, false);
@@ -201,7 +201,7 @@ public class RoundImageView extends AppCompatImageView {
         if (mSelectedMaskColor != selectedMaskColor) {
             mSelectedMaskColor = selectedMaskColor;
             if (mSelectedMaskColor != Color.TRANSPARENT) {
-                mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.DARKEN);
+                mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.SRC_ATOP);
             } else {
                 mSelectedColorFilter = null;
             }

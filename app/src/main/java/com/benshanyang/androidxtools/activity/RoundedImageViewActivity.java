@@ -23,6 +23,8 @@ public class RoundedImageViewActivity extends BaseActivity {
     RoundImageView image3;
     @BindView(R.id.image_4)
     RoundImageView image4;
+    @BindView(R.id.image_6)
+    RoundImageView image6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,6 @@ public class RoundedImageViewActivity extends BaseActivity {
                 finish();
             }
         });
-
+        image6.setSelected(true);
     }
 }
