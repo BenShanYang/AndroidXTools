@@ -178,7 +178,7 @@
     </declare-styleable>
 
     <!--自定义圆角按钮-->
-    <declare-styleable name="RoundedButton">
+    <declare-styleable name="RoundButton">
         <attr name="cornerRadius" />
         <attr name="isShowBorder" />
         <attr name="borderWidth" />
@@ -191,18 +191,19 @@
     </declare-styleable>
 
     <!--圆形或圆角图片-->
-    <declare-styleable name="RoundedImageView">
+    <declare-styleable name="RoundImageView">
         <attr name="isCircle" format="boolean" />
-        <attr name="isCoverSrc" format="boolean" />
         <attr name="cornerRadius" />
+        <attr name="borderWidth" />
+        <attr name="borderColor" />
+        <attr name="selectedBorderWidth" format="dimension" />
+        <attr name="selectedBorderColor" format="color" />
+        <attr name="touchSelectModeEnabled" format="boolean" />
         <attr name="cornerTopLeftRadius" format="dimension" />
         <attr name="cornerTopRightRadius" format="dimension" />
         <attr name="cornerBottomLeftRadius" format="dimension" />
         <attr name="cornerBottomRightRadius" format="dimension" />
-        <attr name="borderWidth" />
-        <attr name="borderColor" />
-        <attr name="innerBorderWidth" format="dimension" />
-        <attr name="innerBorderColor" format="color" />
+        <attr name="isOval" format="boolean" />
         <attr name="maskColor" format="color" />
     </declare-styleable>
 

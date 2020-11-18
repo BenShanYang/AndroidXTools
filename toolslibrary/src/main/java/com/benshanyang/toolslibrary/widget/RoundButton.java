@@ -23,7 +23,7 @@ import com.benshanyang.toolslibrary.drawable.RoundedButtonDrawable;
  * @version 1.0.0
  * @since
  */
-public class RoundedButton extends AppCompatTextView {
+public class RoundButton extends AppCompatTextView {
 
     private float cornerRadius = 0.0f;//圆角半径
     private float borderWidth = 0.0f;//边框宽度
@@ -40,33 +40,33 @@ public class RoundedButton extends AppCompatTextView {
     private boolean isShowBorder = false;//是否显示边框
     private BorderDrawable drawable = null;//背景样式
 
-    public RoundedButton(Context context) {
+    public RoundButton(Context context) {
         super(context);
         init(context, null);
     }
 
-    public RoundedButton(Context context, AttributeSet attrs) {
+    public RoundButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public RoundedButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RoundButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedButton);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RoundButton);
         if (typedArray != null) {
-            cornerRadius = typedArray.getDimension(R.styleable.RoundedButton_cornerRadius, 0);//圆角半径
-            borderWidth = typedArray.getDimension(R.styleable.RoundedButton_borderWidth, 0);//边框宽度
-            pressedBorderColor = typedArray.getColor(R.styleable.RoundedButton_pressedBorderColor, Color.TRANSPARENT);//按下时边框颜色
-            normalBorderColor = typedArray.getColor(R.styleable.RoundedButton_normalBorderColor, Color.TRANSPARENT);//未按下时边框颜色
-            pressedBackgroundColor = typedArray.getColor(R.styleable.RoundedButton_pressedBackgroundColor, Color.TRANSPARENT);//按下时背景色
-            normalBackgroundColor = typedArray.getColor(R.styleable.RoundedButton_normalBackgroundColor, Color.TRANSPARENT);//未按下时背景色
-            pressedTextColor = typedArray.getColor(R.styleable.RoundedButton_pressedTextColor, 0xFF333333);//按下时文字颜色
-            normalTextColor = typedArray.getColor(R.styleable.RoundedButton_normalTextColor, 0xFF333333);//未按下时文字颜色
-            isShowBorder = typedArray.getBoolean(R.styleable.RoundedButton_isShowBorder, false);//是否显示边框
+            cornerRadius = typedArray.getDimension(R.styleable.RoundButton_cornerRadius, 0);//圆角半径
+            borderWidth = typedArray.getDimension(R.styleable.RoundButton_borderWidth, 0);//边框宽度
+            pressedBorderColor = typedArray.getColor(R.styleable.RoundButton_pressedBorderColor, Color.TRANSPARENT);//按下时边框颜色
+            normalBorderColor = typedArray.getColor(R.styleable.RoundButton_normalBorderColor, Color.TRANSPARENT);//未按下时边框颜色
+            pressedBackgroundColor = typedArray.getColor(R.styleable.RoundButton_pressedBackgroundColor, Color.TRANSPARENT);//按下时背景色
+            normalBackgroundColor = typedArray.getColor(R.styleable.RoundButton_normalBackgroundColor, Color.TRANSPARENT);//未按下时背景色
+            pressedTextColor = typedArray.getColor(R.styleable.RoundButton_pressedTextColor, 0xFF333333);//按下时文字颜色
+            normalTextColor = typedArray.getColor(R.styleable.RoundButton_normalTextColor, 0xFF333333);//未按下时文字颜色
+            isShowBorder = typedArray.getBoolean(R.styleable.RoundButton_isShowBorder, false);//是否显示边框
 
             typedArray.recycle();
         }
