@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.snackbar.Snackbar;
+
 /**
  * @ClassName: BaseParentFragment
  * @Description: Fragment的基类
@@ -152,6 +154,21 @@ public abstract class BaseParentFragment extends Fragment {
             }
             toast.setText(message);
             toast.show();
+        }
+    }
+
+    /**
+     * 弹出提示
+     *
+     * @param text 提示的文字
+     */
+    public void showSnackbar(CharSequence text) {
+        View view = getView();
+        if (view == null && activity != null) {
+            view = activity.findViewById(android.R.id.content);
+        }
+        if (view != null) {
+            Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show();
         }
     }
 

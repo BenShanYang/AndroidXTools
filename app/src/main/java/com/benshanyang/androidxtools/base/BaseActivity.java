@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.benshanyang.toolslibrary.base.BaseParentActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 
 /**
@@ -17,6 +18,8 @@ public class BaseActivity extends BaseParentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //全屏模式
         QMUIStatusBarHelper.translucent(activity);
     }
+
 }

@@ -305,7 +305,18 @@
         </attr>
 
         <attr name="immersionStatusBar" format="boolean" />
-
+        <attr name="finishActivityVisibility">
+            <!-- Visible on screen; the default value. -->
+            <enum name="visible" value="0" />
+            <!-- Not displayed, but taken into account during layout (space is left for it). -->
+            <enum name="invisible" value="1" />
+        </attr>
+        <attr name="actionButtonVisibility">
+            <!-- Visible on screen; the default value. -->
+            <enum name="visible" value="0" />
+            <!-- Not displayed, but taken into account during layout (space is left for it). -->
+            <enum name="invisible" value="1" />
+        </attr>
     </declare-styleable>
 
     <!--自定义文字横向跑马灯控件-->
@@ -319,4 +330,33 @@
         <attr name="marqueeView_closeSrc" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="ExpandTextView">
+        <attr name="android:text" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:maxLines" />
+        <attr name="android:lineSpacingExtra" />
+
+        <attr name="iconFontPath" format="string" />
+
+        <attr name="expandText" format="string" />
+        <attr name="expandTextColor" format="color" />
+        <attr name="expandTextSize" format="dimension" />
+        <attr name="expandTextUnderline" format="boolean" />
+        <attr name="expandIcon" format="string" />
+        <attr name="expandIconLocation" format="enum">
+            <enum name="front" value="0" />
+            <enum name="behind" value="1" />
+        </attr>
+
+        <attr name="foldText" format="string" />
+        <attr name="foldTextColor" format="color" />
+        <attr name="foldTextSize" format="dimension" />
+        <attr name="foldTextUnderline" format="boolean" />
+        <attr name="foldIcon" format="string" />
+        <attr name="foldIconLocation" format="enum">
+            <enum name="front" value="0" />
+            <enum name="behind" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="@dimen/dimen_12">
+
+    <com.benshanyang.toolslibrary.widget.ExpandTextView
+        android:id="@+id/expand_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/dimen_4"
+        android:maxLines="3"
+        android:textColor="#FF999999"
+        android:textSize="14sp"
+        app:expandIcon="\uebc1"
+        app:expandIconLocation="front"
+        app:expandTextColor="#0000FF"
+        app:foldIcon="\uebc2"
+        app:foldIconLocation="front"
+        app:foldTextColor="#0000FF"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</FrameLayout>

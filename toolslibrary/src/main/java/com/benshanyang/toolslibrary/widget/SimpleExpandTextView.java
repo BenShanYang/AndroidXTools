@@ -54,7 +54,6 @@ public class SimpleExpandTextView extends AppCompatTextView {
         int width = initWidth(widthMeasureSpec);
         if (initWidth != width) {
             initWidth = width;
-            closeText();
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -62,9 +61,14 @@ public class SimpleExpandTextView extends AppCompatTextView {
     public void setText(String text) {
         if (text != null && !TextUtils.equals(originText, text)) {
             originText = text;
-        }
-        if (initWidth != 0) {
-            closeText();
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    if (initWidth != 0) {
+                        closeText();
+                    }
+                }
+            });
         }
     }
 

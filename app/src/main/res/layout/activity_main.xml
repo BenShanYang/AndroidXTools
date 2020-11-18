@@ -6,9 +6,11 @@
     android:background="@color/activity_bgcolor">
 
     <com.benshanyang.toolslibrary.widget.TitleBarView
+        android:id="@+id/title_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        app:actionButtonVisibility="visible"
         app:backImageSrc="@drawable/ic_finish_activity"
         app:borderColor="#D5D5D5"
         app:borderWidth="2px"
@@ -18,6 +20,7 @@
         app:buttonTextColor="@color/titlebar_actionbtn_textcolor"
         app:buttonTextSize="10sp"
         app:buttonType="text_button"
+        app:finishActivityVisibility="invisible"
         app:immersionStatusBar="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -27,5 +30,81 @@
         app:titleText="标题"
         app:titleTextColor="@color/titlebar_title_textcolor"
         app:titleTextSize="18sp" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dimen_10">
+
+            <com.benshanyang.toolslibrary.widget.BorderTextView
+                android:id="@+id/expand_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:clickable="true"
+                android:drawableLeft="@drawable/ic_widget"
+                android:drawableRight="@drawable/ic_more"
+                android:drawablePadding="@dimen/dimen_6"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:text="ExpandTextView"
+                app:backgroundColor="@android:color/white"
+                app:borderColor="#D5D5D5"
+                app:bottomBorderLeftSpace="@dimen/dimen_15"
+                app:bottomBorderNormalColor="#D5D5D5"
+                app:bottomBorderPressedColor="#FF0000"
+                app:bottomBorderRightSpace="0dp"
+                app:bottomBorderWidth="1px" />
+
+            <com.benshanyang.toolslibrary.widget.BorderTextView
+                android:id="@+id/simple_expand_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:clickable="true"
+                android:drawableLeft="@drawable/ic_widget"
+                android:drawableRight="@drawable/ic_more"
+                android:drawablePadding="@dimen/dimen_6"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:text="SimpleExpandTextView"
+                app:backgroundColor="@android:color/white"
+                app:borderColor="#D5D5D5"
+                app:bottomBorderLeftSpace="@dimen/dimen_15"
+                app:bottomBorderNormalColor="#D5D5D5"
+                app:bottomBorderPressedColor="#FF0000"
+                app:bottomBorderRightSpace="0dp"
+                app:bottomBorderWidth="1px" />
+
+            <com.benshanyang.toolslibrary.widget.BorderTextView
+                android:id="@+id/expand_text_list"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:clickable="true"
+                android:drawableLeft="@drawable/ic_widget"
+                android:drawableRight="@drawable/ic_more"
+                android:drawablePadding="@dimen/dimen_6"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:text="ExpandTextViewList"
+                app:backgroundColor="@android:color/white"
+                app:borderColor="#D5D5D5"
+                app:bottomBorderLeftSpace="@dimen/dimen_15"
+                app:bottomBorderNormalColor="#D5D5D5"
+                app:bottomBorderPressedColor="#FF0000"
+                app:bottomBorderRightSpace="0dp"
+                app:bottomBorderWidth="1px" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,6 +46,7 @@ public class TitleBarView extends FrameLayout {
     private TextView tvTitle;//标题栏
     private TextView btnActionBtn;//文字功能按钮
     private FrameLayout flButton;//文字按钮父布局
+    private FrameLayout flActionButton;//标题栏右侧功能按钮父布局
 
     private OnFinishListener onFinishListener;//点击返回按钮的回调接口
     private OnActionButtonClickListener onActionButtonClickListener;//右侧功能按钮点击事件的回调接口
@@ -91,6 +92,8 @@ public class TitleBarView extends FrameLayout {
             Drawable btnDrawableTop = typedArray.getDrawable(R.styleable.TitleBarView_buttonDrawableTop);//文字按钮的图片
             int btnType = typedArray.getInt(R.styleable.TitleBarView_buttonType, -1);//要显示哪种类型的功能按钮
             immersionStatusBar = typedArray.getBoolean(R.styleable.TitleBarView_immersionStatusBar, false);//沉浸式状态栏
+            int finishActivityVisibility = typedArray.getInt(R.styleable.TitleBarView_finishActivityVisibility, -1);//是否显示标题栏返回按钮
+            int actionButtonVisibility = typedArray.getInt(R.styleable.TitleBarView_actionButtonVisibility, -1);//是否显示标题栏右侧功能按钮
 
             if (tvTitle != null) {
                 //设置标题
@@ -140,19 +143,49 @@ public class TitleBarView extends FrameLayout {
                 titleLayout.setBackgroundColor(titleBarBgColor);
             }
 
-            switch (btnType) {
-                case 0:
-                    //图片按钮
-                    ibActionBtn.setVisibility(VISIBLE);
-                    btnActionBtn.setVisibility(INVISIBLE);
-                    break;
-                case 1:
-                    //文字按钮
-                    ibActionBtn.setVisibility(INVISIBLE);
-                    btnActionBtn.setVisibility(VISIBLE);
-                    break;
-                default:
-                    break;
+            if (ibActionBtn != null && btnActionBtn != null) {
+                switch (btnType) {
+                    case 0:
+                        //图片按钮
+                        ibActionBtn.setVisibility(VISIBLE);
+                        btnActionBtn.setVisibility(INVISIBLE);
+                        break;
+                    case 1:
+                        //文字按钮
+                        ibActionBtn.setVisibility(INVISIBLE);
+                        btnActionBtn.setVisibility(VISIBLE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //是否显示标题栏返回按钮
+            if (ibBack != null) {
+                switch (finishActivityVisibility) {
+                    case 0:
+                        ibBack.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        ibBack.setVisibility(View.INVISIBLE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //是否显示右侧功能按钮
+            if (flActionButton != null) {
+                switch (actionButtonVisibility) {
+                    case 0:
+                        flActionButton.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        flActionButton.setVisibility(View.INVISIBLE);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             typedArray.recycle();
@@ -184,6 +217,8 @@ public class TitleBarView extends FrameLayout {
         btnActionBtn = (TextView) view.findViewById(R.id.btn_button);
         //文字按钮父布局
         flButton = (FrameLayout) view.findViewById(R.id.fl_button);
+        //标题栏右侧功能按钮父布局
+        flActionButton = (FrameLayout) view.findViewById(R.id.fl_action_button);
     }
 
     /**
@@ -461,9 +496,31 @@ public class TitleBarView extends FrameLayout {
     }
 
     /**
+     * 设置标题栏左侧返回按钮是否显示
+     *
+     * @param visibility 入参为: View.VISIBLE、View.INVISIBLE、View.GONE
+     */
+    public void setFinishActivityVisibility(int visibility) {
+        if (ibBack != null && (visibility == View.VISIBLE || visibility == View.INVISIBLE)) {
+            ibBack.setVisibility(visibility);
+        }
+    }
+
+    /**
+     * 设置标题栏右侧功能按钮是否显示
+     *
+     * @param visibility 入参为: View.VISIBLE、View.INVISIBLE、View.GONE
+     */
+    public void setActionButtonVisibility(int visibility) {
+        if (flActionButton != null && (visibility == View.VISIBLE || visibility == View.INVISIBLE)) {
+            flActionButton.setVisibility(visibility);
+        }
+    }
+
+    /**
      * 沉浸式状态栏
      *
-     * @param flag ture设置为沉浸式状态栏样式(Android 5.0以后才有效),false非沉浸式状态栏样式
+     * @param flag true设置为沉浸式状态栏样式(Android 5.0以后才有效),false非沉浸式状态栏样式
      */
     public void setImmersionStateBar(boolean flag) {
         immersionStatusBar = flag;

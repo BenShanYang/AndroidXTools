@@ -22,6 +22,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
 /**
  * @ClassName: BaseParentActivity
  * @Description: Activity基类
@@ -155,6 +157,15 @@ public abstract class BaseParentActivity extends FragmentActivity {
             toast.setText(message);
             toast.show();
         }
+    }
+
+    /**
+     * 弹出提示
+     *
+     * @param text 提示的文字
+     */
+    public void showSnackbar(CharSequence text) {
+        Snackbar.make(findViewById(android.R.id.content), text, Snackbar.LENGTH_SHORT).show();
     }
 
     /**
