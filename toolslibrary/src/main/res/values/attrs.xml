@@ -198,13 +198,13 @@
         <attr name="borderColor" />
         <attr name="selectedBorderWidth" format="dimension" />
         <attr name="selectedBorderColor" format="color" />
+        <attr name="selectedMaskColor" format="color" />
         <attr name="touchSelectModeEnabled" format="boolean" />
         <attr name="cornerTopLeftRadius" format="dimension" />
         <attr name="cornerTopRightRadius" format="dimension" />
         <attr name="cornerBottomLeftRadius" format="dimension" />
         <attr name="cornerBottomRightRadius" format="dimension" />
         <attr name="isOval" format="boolean" />
-        <attr name="maskColor" format="color" />
     </declare-styleable>
 
     <!--带清除功能的输入框-->

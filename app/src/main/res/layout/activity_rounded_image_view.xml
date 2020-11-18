@@ -112,9 +112,9 @@
                     app:borderWidth="2dp"
                     app:cornerTopLeftRadius="@dimen/dimen_10"
                     app:cornerTopRightRadius="@dimen/dimen_10"
-                    app:maskColor="#33FF0000"
                     app:selectedBorderColor="@android:color/holo_red_dark"
-                    app:selectedBorderWidth="@dimen/dimen_1" />
+                    app:selectedBorderWidth="@dimen/dimen_1"
+                    app:selectedMaskColor="#33FF0000" />
             </FrameLayout>
         </LinearLayout>
     </FrameLayout>

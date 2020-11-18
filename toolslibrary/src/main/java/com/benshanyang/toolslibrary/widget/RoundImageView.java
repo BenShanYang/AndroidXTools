@@ -104,7 +104,7 @@ public class RoundImageView extends AppCompatImageView {
         mBorderColor = ta.getColor(R.styleable.RoundImageView_borderColor, DEFAULT_BORDER_COLOR);
         mSelectedBorderWidth = ta.getDimensionPixelSize(R.styleable.RoundImageView_selectedBorderWidth, mBorderWidth);
         mSelectedBorderColor = ta.getColor(R.styleable.RoundImageView_selectedBorderColor, mBorderColor);
-        mSelectedMaskColor = ta.getColor(R.styleable.RoundImageView_maskColor, Color.TRANSPARENT);
+        mSelectedMaskColor = ta.getColor(R.styleable.RoundImageView_selectedMaskColor, Color.TRANSPARENT);
         if (mSelectedMaskColor != Color.TRANSPARENT) {
             mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.SRC_ATOP);
         }
