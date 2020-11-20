@@ -23,6 +23,8 @@ public class RoundedImageViewActivity extends BaseActivity {
     RoundImageView image3;
     @BindView(R.id.image_4)
     RoundImageView image4;
+    @BindView(R.id.image_5)
+    RoundImageView image5;
     @BindView(R.id.image_6)
     RoundImageView image6;
 
@@ -38,6 +40,13 @@ public class RoundedImageViewActivity extends BaseActivity {
                 finish();
             }
         });
-        image6.setSelected(true);
+        image5.setSelected(true);
+
+        image6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //image6.setSelected(true);
+            }
+        });
     }
 }

@@ -47,6 +47,7 @@ public class RoundImageView extends AppCompatImageView {
     private boolean mIsOval = false;
     private boolean mIsCircle = false;
 
+    private int maskColor;
     private int mBorderWidth;
     private int mBorderColor;
 
@@ -102,6 +103,11 @@ public class RoundImageView extends AppCompatImageView {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RoundImageView, 0, 0);
         mBorderWidth = ta.getDimensionPixelSize(R.styleable.RoundImageView_borderWidth, 0);
         mBorderColor = ta.getColor(R.styleable.RoundImageView_borderColor, DEFAULT_BORDER_COLOR);
+        maskColor = ta.getColor(R.styleable.RoundImageView_maskColor, Color.TRANSPARENT);
+        if (maskColor != Color.TRANSPARENT) {
+            mColorFilter = new PorterDuffColorFilter(maskColor, PorterDuff.Mode.SRC_ATOP);
+        }
+
         mSelectedBorderWidth = ta.getDimensionPixelSize(R.styleable.RoundImageView_selectedBorderWidth, mBorderWidth);
         mSelectedBorderColor = ta.getColor(R.styleable.RoundImageView_selectedBorderColor, mBorderColor);
         mSelectedMaskColor = ta.getColor(R.styleable.RoundImageView_selectedMaskColor, Color.TRANSPARENT);
@@ -209,9 +215,21 @@ public class RoundImageView extends AppCompatImageView {
                 invalidate();
             }
         }
-        mSelectedMaskColor = selectedMaskColor;
     }
 
+    public void setMaskColor(@ColorInt int maskColor) {
+        if (RoundImageView.this.maskColor != maskColor) {
+            RoundImageView.this.maskColor = maskColor;
+            if (RoundImageView.this.maskColor != Color.TRANSPARENT) {
+                mColorFilter = new PorterDuffColorFilter(RoundImageView.this.maskColor, PorterDuff.Mode.SRC_ATOP);
+            } else {
+                mColorFilter = null;
+            }
+            if (!mIsSelected) {
+                invalidate();
+            }
+        }
+    }
 
     public void setCircle(boolean isCircle) {
         if (mIsCircle != isCircle) {
@@ -262,6 +280,10 @@ public class RoundImageView extends AppCompatImageView {
         return mSelectedMaskColor;
     }
 
+    public int getMaskColor() {
+        return maskColor;
+    }
+
     public int getCornerTopLeftRadius() {
         return cornerTopLeftRadius;
     }
@@ -306,23 +328,20 @@ public class RoundImageView extends AppCompatImageView {
     }
 
     public void setSelectedColorFilter(ColorFilter cf) {
-        if (mSelectedColorFilter == cf) {
-            return;
-        }
-        mSelectedColorFilter = cf;
-        if (mIsSelected) {
-            invalidate();
+        if (mSelectedColorFilter != cf) {
+            mSelectedColorFilter = cf;
+            if (mIsSelected) {
+                invalidate();
+            }
         }
     }
 
-    @Override
     public void setColorFilter(ColorFilter cf) {
-        if (mColorFilter == cf) {
-            return;
-        }
-        mColorFilter = cf;
-        if (!mIsSelected) {
-            invalidate();
+        if (mColorFilter != cf) {
+            mColorFilter = cf;
+            if (!mIsSelected) {
+                invalidate();
+            }
         }
     }
 
@@ -558,8 +577,7 @@ public class RoundImageView extends AppCompatImageView {
             mBorderPaint.setColor(mIsSelected ? mSelectedBorderColor : mBorderColor);
             mBorderPaint.setStrokeWidth(borderWidth);
             if (mIsCircle) {
-                canvas.drawCircle(mRectF.centerX(), mRectF.centerY(),
-                        Math.min(mRectF.width(), mRectF.height()) / 2 - halfBorderWidth, mBorderPaint);
+                canvas.drawCircle(mRectF.centerX(), mRectF.centerY(), Math.min(mRectF.width(), mRectF.height()) / 2 - halfBorderWidth, mBorderPaint);
             } else {
                 mDrawRectF.left = mRectF.left + halfBorderWidth;
                 mDrawRectF.top = mRectF.top + halfBorderWidth;

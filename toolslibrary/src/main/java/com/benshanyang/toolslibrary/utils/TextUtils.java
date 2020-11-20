@@ -50,6 +50,23 @@ public class TextUtils {
     }
 
     /**
+     * 获取TextView或EditText的控件内容
+     *
+     * @param textView 传入TextView或EditText控件
+     * @return 返回控件的内容
+     */
+    public static String getText(TextView textView) {
+        String text = "";
+        if (textView != null) {
+            CharSequence cText = textView.getText();
+            if (cText != null) {
+                text = cText.toString();
+            }
+        }
+        return text;
+    }
+
+    /**
      * 设置字体粗细
      *
      * @param textView  显示文字的控件

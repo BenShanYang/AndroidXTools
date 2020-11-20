@@ -199,6 +199,7 @@
         <attr name="selectedBorderWidth" format="dimension" />
         <attr name="selectedBorderColor" format="color" />
         <attr name="selectedMaskColor" format="color" />
+        <attr name="maskColor" format="color" />
         <attr name="touchSelectModeEnabled" format="boolean" />
         <attr name="cornerTopLeftRadius" format="dimension" />
         <attr name="cornerTopRightRadius" format="dimension" />
