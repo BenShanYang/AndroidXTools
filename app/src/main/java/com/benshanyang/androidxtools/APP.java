@@ -11,6 +11,7 @@ import com.benshanyang.toolslibrary.manager.ActivityStackManager;
  * @Date: 2019/4/10 15:39
  */
 public class APP extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
