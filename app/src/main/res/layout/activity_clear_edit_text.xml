@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PasswordEditTextActivity">
+    tools:context=".activity.ClearEditTextActivity">
 
     <com.benshanyang.toolslibrary.widget.TitleBarView
         android:id="@+id/title_bar_view"
@@ -18,35 +18,37 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleBarHeight="?android:attr/actionBarSize"
-        app:titleText="PasswordEditText"
+        app:titleText="ClearEditText"
         app:titleTextSize="18sp" />
 
-    <com.benshanyang.toolslibrary.widget.PasswordEditText
-        android:id="@+id/pwdet"
+    <com.benshanyang.toolslibrary.widget.ClearEditText
+        android:id="@+id/cet"
         android:layout_width="@dimen/dimen_300"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:actionButtonType="password_clear"
-        app:borderLeftSpace="@dimen/dimen_1"
-        app:borderRightSpace="@dimen/dimen_1"
-        app:borderVisibility="visible"
-        app:bottomBorderWidth="1dp"
-        app:digits="^[a-zA-Z0-9_@#%\*]+$"
-        app:focusedBorderColor="#FF4444"
-        app:hint="请输入密码"
-        app:iconColor="#FF00FF"
+        android:digits="^[a-z0-9]+$"
+        android:hint="@string/input_phone"
+        android:icon="@drawable/ic_phone"
+        android:inputType="textMultiLine"
+        android:minHeight="@dimen/dimen_45"
+        android:textColor="#333333"
+        android:textColorHint="#999999"
+        android:textSize="14sp"
+        app:borderLeftSpace="@dimen/dimen_10"
+        app:borderRightSpace="@dimen/dimen_10"
+        app:borderWidth="2px"
+        app:clearIconPaddingLeft="10dp"
+        app:clearIconPaddingRight="10dp"
+        app:iconColor="#999999"
         app:iconPaddingLeft="8dp"
         app:iconTextPaddingLeft="8dp"
-        app:iconTextPaddingRight="5dp"
+        app:isShowBorder="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar_view"
         app:layout_constraintVertical_bias="0.2"
-        app:normalBorderColor="#D5D5D5"
-        app:passwordClearImageColor="#FF0000"
-        app:passwordSwitchImageColor="#0000FF"
-        app:textColor="#FF4444"
-        app:textColorHint="#999999" />
+        app:textPaddingBottom="@dimen/dimen_3"
+        app:textPaddingTop="@dimen/dimen_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

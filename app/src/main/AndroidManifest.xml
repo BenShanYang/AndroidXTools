@@ -10,6 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.SimpleClearEditTextActivity"></activity>
+        <activity android:name=".activity.ClearEditTextActivity" />
         <activity
             android:name=".activity.PasswordEditTextActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"

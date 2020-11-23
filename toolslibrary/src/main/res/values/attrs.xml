@@ -45,6 +45,9 @@
     <attr name="titleDrawablePadding" format="dimension" />
     <attr name="titleContentSpace" format="dimension" />
     <attr name="normalBackgroundColor" format="color" />
+    <attr name="iconColor" format="color" />
+    <attr name="borderLeftSpace" format="dimension" />
+    <attr name="borderRightSpace" format="dimension" />
 
     <!--搜索栏-->
     <declare-styleable name="SearchBarView">
@@ -148,7 +151,7 @@
         <attr name="textSize" />
         <attr name="textColor" />
         <attr name="textColorHint" />
-        <attr name="gravity" />
+        <attr name="android:gravity" />
         <attr name="iconClear" />
         <attr name="digits" />
         <attr name="maxLength" />
@@ -210,39 +213,39 @@
         <attr name="iconTextPaddingLeft" />
         <attr name="clearIconPaddingLeft" format="dimension" />
         <attr name="clearIconPaddingRight" format="dimension" />
-        <attr name="maxLength" />
-        <attr name="minLines" />
-        <attr name="maxLines" />
-        <attr name="textSize" />
-        <attr name="textColor" />
-        <attr name="text" />
-        <attr name="textColorHint" />
-        <attr name="hint" />
+
+        <attr name="android:maxLength" />
+        <attr name="android:minLines" />
+        <attr name="android:maxLines" />
+        <attr name="android:minHeight" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:text" />
+        <attr name="android:textColorHint" />
+        <attr name="android:hint" />
+        <attr name="android:gravity" />
+        <attr name="android:inputType" />
+        <attr name="android:icon" />
+        <attr name="android:digits" />
+        <attr name="android:singleLine" />
+
+        <attr name="textPaddingTop" format="dimension" />
+        <attr name="textPaddingBottom" format="dimension" />
 
         <attr name="borderWidth" />
         <attr name="focusedBorderColor" />
         <attr name="normalBorderColor" />
-        <attr name="digits" />
 
-        <attr name="icon" />
+        <attr name="iconColor" />
+        <attr name="iconClearColor" format="color" />
+
         <attr name="iconClear" />
 
-        <attr name="singleLine" />
+
         <attr name="isShowBorder" />
 
-        <attr name="gravity" format="enum">
-            <enum name="left" value="0" />
-            <enum name="right" value="1" />
-            <enum name="top" value="2" />
-            <enum name="bottom" value="3" />
-            <enum name="center" value="4" />
-            <enum name="center_vertical" value="5" />
-            <enum name="left_center_vertical" value="6" />
-            <enum name="right_center_vertical" value="7" />
-            <enum name="center_horizontal" value="8" />
-            <enum name="top_center_horizontal" value="9" />
-            <enum name="bottom_center_horizontal" value="10" />
-        </attr>
+        <attr name="borderLeftSpace" />
+        <attr name="borderRightSpace" />
     </declare-styleable>
 
     <!--密码输入框-->
@@ -254,7 +257,7 @@
         <attr name="iconTextPaddingRight" format="dimension" />
         <attr name="textSize" />
 
-        <attr name="iconColor" format="color" />
+        <attr name="iconColor" />
         <attr name="passwordClearImageColor" format="color" />
         <attr name="passwordSwitchImageColor" format="color" />
         <attr name="icon" />
@@ -264,8 +267,8 @@
         <attr name="textColorHint" />
         <attr name="focusedBorderColor" />
         <attr name="normalBorderColor" />
-        <attr name="borderLeftSpace" format="dimension" />
-        <attr name="borderRightSpace" format="dimension" />
+        <attr name="borderLeftSpace" />
+        <attr name="borderRightSpace" />
 
         <attr name="text" />
         <attr name="digits" />

@@ -2,18 +2,23 @@ package com.benshanyang.toolslibrary.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -25,11 +30,10 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.benshanyang.toolslibrary.R;
 import com.benshanyang.toolslibrary.callback.TextWatchListener;
-import com.benshanyang.toolslibrary.utils.DensityUtils;
-import com.benshanyang.toolslibrary.utils.TextUtils;
 
 import static android.util.TypedValue.COMPLEX_UNIT_PX;
 
@@ -48,9 +52,9 @@ public class ClearEditText extends FrameLayout {
     private ImageButton ibClear;//清除按钮
     private View borderView;//底边
 
-    private String digits = "";//过滤条件
+    private CharSequence digits = "";//过滤条件
     private float borderWidth = 0;//底部分割线宽度
-    private int maxLength = 0;//最大输入长度
+    private int maxLength = Integer.MAX_VALUE;//最大输入长度
     private int focusedBorderColor = 0xFF0087f3;//输入框获取焦点时候的底边颜色
     private int normalBorderColor = 0xFFD5D5D5;//输入框未获取焦点时候的底边颜色
     private boolean isShowBorder = false;//是否显示底部分割线 默认不现实
@@ -75,37 +79,47 @@ public class ClearEditText extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_clear_edittext, this, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.layout_clear_edittext, this, false);
         initView(view);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ClearEditText);
         if (typedArray != null) {
 
-            boolean singleLine = typedArray.getBoolean(R.styleable.ClearEditText_singleLine, false);//是否是一行
+            boolean singleLine = typedArray.getBoolean(R.styleable.ClearEditText_android_singleLine, false);//是否是一行
             isShowBorder = typedArray.getBoolean(R.styleable.ClearEditText_isShowBorder, false);//是否显示底部分割线
-            int gravity = typedArray.getInt(R.styleable.ClearEditText_gravity, -1);//文字显示的位置
+            int gravity = typedArray.getInt(R.styleable.ClearEditText_android_gravity, Gravity.LEFT | Gravity.CENTER_VERTICAL);//文字显示的位置
 
             float iconPaddingLeft = typedArray.getDimension(R.styleable.ClearEditText_iconPaddingLeft, 0);//icon和左边的距离
             float iconTextPaddingLeft = typedArray.getDimension(R.styleable.ClearEditText_iconTextPaddingLeft, etInput.getPaddingLeft());//icon和文字间的距离
             float clearIconPaddingLeft = typedArray.getDimension(R.styleable.ClearEditText_clearIconPaddingLeft, ibClear.getPaddingLeft());//清除按钮的左边距
             float clearIconPaddingRight = typedArray.getDimension(R.styleable.ClearEditText_clearIconPaddingRight, ibClear.getPaddingLeft());//清除按钮的右边距
-            float minLines = typedArray.getDimension(R.styleable.ClearEditText_minLines, -1);//最小输入行数
-            int maxLines = typedArray.getInt(R.styleable.ClearEditText_maxLines, -1);//最大输入行数
-            float textSize = typedArray.getDimension(R.styleable.ClearEditText_textSize, 0);//文字的大小
+            int minLines = typedArray.getInt(R.styleable.ClearEditText_android_minLines, 1);//最小输入行数
+            int maxLines = typedArray.getInt(R.styleable.ClearEditText_android_maxLines, Integer.MAX_VALUE);//最大输入行数
+            float textSize = typedArray.getDimensionPixelSize(R.styleable.ClearEditText_android_textSize, 0);//文字的大小
 
-            ColorStateList textColor = typedArray.getColorStateList(R.styleable.ClearEditText_textColor);//设置密码字体颜色
-            ColorStateList textColorHint = typedArray.getColorStateList(R.styleable.ClearEditText_textColorHint);//提示文字的颜色
+            ColorStateList textColor = typedArray.getColorStateList(R.styleable.ClearEditText_android_textColor);//设置密码字体颜色
+            ColorStateList textColorHint = typedArray.getColorStateList(R.styleable.ClearEditText_android_textColorHint);//提示文字的颜色
 
-            String text = typedArray.getString(R.styleable.ClearEditText_text);//设置输入框文字
-            String hint = typedArray.getString(R.styleable.ClearEditText_hint);//提示文字
+            CharSequence text = typedArray.getText(R.styleable.ClearEditText_android_text);//设置输入框文字
+            CharSequence hint = typedArray.getText(R.styleable.ClearEditText_android_hint);//提示文字
+            int mTextId = typedArray.getResourceId(R.styleable.ClearEditText_android_text, Resources.ID_NULL);
+            int mHintId = typedArray.getResourceId(R.styleable.ClearEditText_android_hint, Resources.ID_NULL);
 
-            Drawable icon = typedArray.getDrawable(R.styleable.ClearEditText_icon);//输入框最左侧小图标
+            Drawable icon = typedArray.getDrawable(R.styleable.ClearEditText_android_icon);//输入框最左侧小图标
             Drawable iconClear = typedArray.getDrawable(R.styleable.ClearEditText_iconClear);//输入框最左侧小图标
 
+            int iconColor = typedArray.getColor(R.styleable.ClearEditText_iconColor, -1);//文字左侧图变颜色
+            int iconClearColor = typedArray.getColor(R.styleable.ClearEditText_iconClearColor, -1);//清除按钮图标颜色
             normalBorderColor = typedArray.getColor(R.styleable.ClearEditText_normalBorderColor, 0xFFD5D5D5);//失去焦点时底边颜色
             focusedBorderColor = typedArray.getColor(R.styleable.ClearEditText_focusedBorderColor, 0xFF0087f3);//获取焦点时底边颜色
             borderWidth = typedArray.getDimension(R.styleable.ClearEditText_borderWidth, 0);//底部分割线宽度
-            digits = typedArray.getString(R.styleable.ClearEditText_digits);//过滤字符串
-            maxLength = typedArray.getInteger(R.styleable.ClearEditText_maxLength, Integer.MAX_VALUE);//最大输入的长度
+            digits = typedArray.getText(R.styleable.ClearEditText_android_digits);//过滤字符串
+            maxLength = typedArray.getInteger(R.styleable.ClearEditText_android_maxLength, Integer.MAX_VALUE);//最大输入的长度
+            int inputType = typedArray.getInt(R.styleable.ClearEditText_android_inputType, InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);//输入框输入类型
+            float borderLeftSpace = typedArray.getDimension(R.styleable.ClearEditText_borderLeftSpace, 0);//第部边框线的左侧margin
+            float borderRightSpace = typedArray.getDimension(R.styleable.ClearEditText_borderRightSpace, 0);//第部边框线的右侧margin
+            int minHeight = typedArray.getDimensionPixelSize(R.styleable.ClearEditText_android_minHeight, -1);//输入框最小高度
+            float textPaddingTop = typedArray.getDimension(R.styleable.ClearEditText_textPaddingTop, 0);//文字的上边距
+            float textPaddingBottom = typedArray.getDimension(R.styleable.ClearEditText_textPaddingBottom, 0);//文字的下边距
 
             //设置左侧图标和控件左边的距离
             if (ivIcon != null) {
@@ -113,6 +127,10 @@ public class ClearEditText extends FrameLayout {
                 //设置左侧图标
                 if (icon != null) {
                     ivIcon.setImageDrawable(icon);
+                }
+                //设置左侧图标颜色
+                if (iconColor != -1) {
+                    ivIcon.setColorFilter(iconColor);
                 }
             }
 
@@ -123,113 +141,83 @@ public class ClearEditText extends FrameLayout {
                 if (iconClear != null) {
                     ibClear.setImageDrawable(iconClear);
                 }
+                //设置清除按钮的图标颜色
+                if (iconClearColor != -1) {
+                    ibClear.setColorFilter(iconClearColor);
+                }
             }
 
             if (etInput != null) {
+                if (minHeight != -1) {
+                    etInput.setMinHeight(minHeight);
+                    etInput.setMinimumHeight(minHeight);
+                }
                 //设置图标和文字的间距
-                etInput.setPadding((int) iconTextPaddingLeft, 0, 0, 0);
+                etInput.setPadding((int) iconTextPaddingLeft, (int) textPaddingTop, 0, (int) textPaddingBottom);
                 //设置最小行数
-                if (minLines > 0) {
-                    etInput.setMinLines((int) minLines);
-                }
+                etInput.setMinLines(minLines);
                 //设置最大行数
-                if (maxLines > 0) {
-                    etInput.setMaxLines(maxLines);
-                }
+                etInput.setMaxLines(maxLines);
                 //是否只显示一行
                 etInput.setSingleLine(singleLine);
                 //设置字体大小
-                if (textSize > 0) {
-                    etInput.setTextSize(DensityUtils.px2sp(context, textSize));
-                }
+                etInput.setTextSize(COMPLEX_UNIT_PX, textSize);
                 //设置字体颜色
                 if (textColor != null) {
                     etInput.setTextColor(textColor);
-                }
-                //设置提示文字颜色
-                if (textColorHint != null) {
-                    etInput.setHintTextColor(textColorHint);
                 }
                 //设置文字
                 if (!TextUtils.isEmpty(text)) {
                     etInput.setText(text);
                 }
+                if (mTextId != Resources.ID_NULL) {
+                    etInput.setText(mTextId);
+                }
                 //设置提示文字
                 if (!TextUtils.isEmpty(hint)) {
                     etInput.setHint(hint);
                 }
-                //设置文字显示的方向
-                switch (gravity) {
-                    case 0:
-                        //left
-                        etInput.setGravity(Gravity.LEFT);
-                        break;
-                    case 1:
-                        //right
-                        etInput.setGravity(Gravity.RIGHT);
-                        break;
-                    case 2:
-                        //top
-                        etInput.setGravity(Gravity.TOP);
-                        break;
-                    case 3:
-                        //bottom
-                        etInput.setGravity(Gravity.BOTTOM);
-                        break;
-                    case 4:
-                        //center
-                        etInput.setGravity(Gravity.CENTER);
-                        break;
-                    case 5:
-                        //center_vertical
-                        etInput.setGravity(Gravity.CENTER_VERTICAL);
-                        break;
-                    case 6:
-                        //left_center_vertical
-                        etInput.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-                        break;
-                    case 7:
-                        //right_center_vertical
-                        etInput.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-                        break;
-                    case 8:
-                        //center_horizontal
-                        etInput.setGravity(Gravity.CENTER_HORIZONTAL);
-                        break;
-                    case 9:
-                        //top_center_horizontal
-                        etInput.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-                        break;
-                    case 10:
-                        //bottom_center_horizontal
-                        etInput.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-                        break;
-                    default:
-                        etInput.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-                        break;
+                if (mHintId != Resources.ID_NULL) {
+                    etInput.setHint(mHintId);
                 }
+                //设置提示文字颜色
+                if (textColorHint != null) {
+                    etInput.setHintTextColor(textColorHint);
+                }
+                //设置文字显示的方向
+                etInput.setGravity(gravity);
+                //设置输入类型
+                etInput.setInputType(inputType);
             }
+
 
             //设置底边
             if (borderView != null) {
                 if (isShowBorder) {
                     //显示底边
-                    borderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) borderWidth));
+                    //ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, (int) borderWidth);
+                    ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) borderView.getLayoutParams();
+                    params.height = (int) borderWidth;
+                    borderView.setLayoutParams(params);
                     borderView.setBackgroundColor(normalBorderColor);
                     borderView.setVisibility(VISIBLE);
                 } else {
                     //不显示底边
                     borderView.setVisibility(GONE);
                 }
+
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) borderView.getLayoutParams();
+                params.leftMargin = (int) borderLeftSpace;
+                params.rightMargin = (int) borderRightSpace;
+                borderView.setLayoutParams(params);
             }
 
             typedArray.recycle();
         }
 
-        addView(view);
+        addView(view, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL));
         initListener();
     }
-
 
     /**
      * 初始化监听事件
@@ -243,7 +231,7 @@ public class ClearEditText extends FrameLayout {
                     if (TextUtils.isEmpty(digits)) {
                         //如果没有匹配条件就不去匹配
                         return null;
-                    } else if (inputStr.matches(digits)) {
+                    } else if (inputStr.matches(digits.toString())) {
                         //设置了匹配条件 且符合匹配条件
                         return null;
                     } else {
@@ -340,6 +328,44 @@ public class ClearEditText extends FrameLayout {
         etInput = (EditText) view.findViewById(R.id.et_inputbar);//输入框
         ibClear = (ImageButton) view.findViewById(R.id.ib_clearbtn);//清除按钮
         borderView = view.findViewById(R.id.borderview);//底边
+    }
+
+    /**
+     * 设置底部边框距父布局左侧的间距
+     *
+     * @param space 距离值
+     */
+    public void setBorderLeftSpace(int space) {
+        if (borderView != null) {
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) borderView.getLayoutParams();
+            params.leftMargin = space;//第部边框线的左侧margin
+            borderView.setLayoutParams(params);
+        }
+    }
+
+    /**
+     * 设置底部边框距父布局右侧的间距
+     *
+     * @param space 距离值
+     */
+    public void setBorderRightSpace(int space) {
+        if (borderView != null) {
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) borderView.getLayoutParams();
+            params.rightMargin = space;//第部边框线的右侧margin
+            borderView.setLayoutParams(params);
+        }
+    }
+
+    /**
+     * 设置输入框的输入类型
+     *
+     * @param type 输入类型 输入类型请参照{@link android.text.InputType}
+     * @see android.text.InputType
+     */
+    public void setInputType(int type) {
+        if (etInput != null) {
+            etInput.setInputType(type);
+        }
     }
 
     /**
@@ -471,7 +497,7 @@ public class ClearEditText extends FrameLayout {
      */
     public void setTextSize(float fontSize) {
         if (etInput != null) {
-            etInput.setTextSize(COMPLEX_UNIT_PX,fontSize);
+            etInput.setTextSize(COMPLEX_UNIT_PX, fontSize);
         }
     }
 
@@ -491,9 +517,20 @@ public class ClearEditText extends FrameLayout {
      *
      * @param str 文字内容
      */
-    public void setText(String str) {
+    public void setText(CharSequence str) {
         if (etInput != null) {
             etInput.setText(str);
+        }
+    }
+
+    /**
+     * 设置文字内容
+     *
+     * @param resid 资源id
+     */
+    public void setText(@StringRes int resid) {
+        if (etInput != null) {
+            etInput.setText(resid);
         }
     }
 
@@ -502,17 +539,13 @@ public class ClearEditText extends FrameLayout {
      *
      * @return
      */
-    public String getText() {
+    public CharSequence getText() {
         Editable text = null;
         if (etInput != null) {
             text = etInput.getText();
         }
 
-        if (TextUtils.isEmpty(text)) {
-            return null;
-        } else {
-            return text.toString();
-        }
+        return TextUtils.isEmpty(text) ? "" : text;
     }
 
     /**
@@ -546,6 +579,19 @@ public class ClearEditText extends FrameLayout {
         if (etInput != null) {
             etInput.setHint(resId);
         }
+    }
+
+    /**
+     * 获取提示文本内容
+     *
+     * @return 返回提示内容
+     */
+    public CharSequence getHint() {
+        CharSequence hint = null;
+        if (etInput != null) {
+            hint = etInput.getHint();
+        }
+        return TextUtils.isEmpty(hint) ? "" : hint;
     }
 
     /**
@@ -643,7 +689,7 @@ public class ClearEditText extends FrameLayout {
      *
      * @param regex 必须是正则表达式,否则过滤不正确
      */
-    public void setDigits(String regex) {
+    public void setDigits(CharSequence regex) {
         this.digits = regex;
     }
 

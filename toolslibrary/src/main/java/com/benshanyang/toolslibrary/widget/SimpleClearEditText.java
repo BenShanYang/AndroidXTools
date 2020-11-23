@@ -25,7 +25,6 @@ import com.benshanyang.toolslibrary.R;
 import com.benshanyang.toolslibrary.callback.BorderDrawable;
 import com.benshanyang.toolslibrary.callback.TextWatchListener;
 import com.benshanyang.toolslibrary.drawable.SimpleEditTextDrawable;
-import com.benshanyang.toolslibrary.utils.DensityUtils;
 import com.benshanyang.toolslibrary.utils.TextUtils;
 
 import static android.util.TypedValue.COMPLEX_UNIT_PX;
@@ -95,16 +94,18 @@ public class SimpleClearEditText extends LinearLayout {
     private void initWidget(Context context) {
         setOrientation(HORIZONTAL);
         editText = new EditText(context);//内容输入框
+        editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         editText.setBackgroundColor(Color.TRANSPARENT);
+        editText.setPadding(dp2px(1), 0, 0, 0);
         clearButton = new ImageButton(context); //清除按钮
         clearButton.setBackgroundColor(Color.TRANSPARENT);
         clearButton.setVisibility(GONE);
 
-        LayoutParams editParams = new LayoutParams(0, LayoutParams.MATCH_PARENT);
+        LayoutParams editParams = new LayoutParams(0, LayoutParams.WRAP_CONTENT);
+        editParams.gravity = Gravity.CENTER_VERTICAL;
         editParams.weight = 1f;
         addView(editText, editParams);
-        addView(clearButton, new LayoutParams(DensityUtils.dp2px(context, 36), LayoutParams.MATCH_PARENT));
-
+        addView(clearButton, new LayoutParams(dp2px(36), LayoutParams.MATCH_PARENT));
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -122,7 +123,7 @@ public class SimpleClearEditText extends LinearLayout {
                     textColor = typedArray.getColorStateList(attr);//文字的颜色
                 } else if (attr == R.styleable.SimpleClearEditText_textColorHint) {
                     textColorHint = typedArray.getColorStateList(attr);//提示文字的颜色
-                } else if (attr == R.styleable.SimpleClearEditText_gravity) {
+                } else if (attr == R.styleable.SimpleClearEditText_android_gravity) {
                     gravity = typedArray.getInt(attr, Gravity.LEFT | Gravity.CENTER_VERTICAL);//文字显示的位置 默认居左垂直居中
                 } else if (attr == R.styleable.SimpleClearEditText_iconClear) {
                     iconClear = typedArray.getDrawable(attr);//清空图标
@@ -186,7 +187,7 @@ public class SimpleClearEditText extends LinearLayout {
             editText.setText(TextUtils.isEmpty(text) ? "" : text);//设置文字
             editText.setHint(TextUtils.isEmpty(hint) ? "" : hint);//设置提示文字
             if (textSize > 0) {
-                editText.setTextSize(DensityUtils.px2sp(getContext(), textSize));//设置文字大小
+                editText.setTextSize(px2sp(textSize));//设置文字大小
             }
             if (textColor != null) {
                 editText.setTextColor(textColor);//设置提示文字颜色
@@ -195,55 +196,7 @@ public class SimpleClearEditText extends LinearLayout {
                 editText.setHintTextColor(textColorHint);//设置提示文字颜色
             }
             //设置文字显示的方向
-            switch (gravity) {
-                case 0:
-                    //left
-                    editText.setGravity(Gravity.LEFT);
-                    break;
-                case 1:
-                    //right
-                    editText.setGravity(Gravity.RIGHT);
-                    break;
-                case 2:
-                    //top
-                    editText.setGravity(Gravity.TOP);
-                    break;
-                case 3:
-                    //bottom
-                    editText.setGravity(Gravity.BOTTOM);
-                    break;
-                case 4:
-                    //center
-                    editText.setGravity(Gravity.CENTER);
-                    break;
-                case 5:
-                    //center_vertical
-                    editText.setGravity(Gravity.CENTER_VERTICAL);
-                    break;
-                case 6:
-                    //left_center_vertical
-                    editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-                    break;
-                case 7:
-                    //right_center_vertical
-                    editText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-                    break;
-                case 8:
-                    //center_horizontal
-                    editText.setGravity(Gravity.CENTER_HORIZONTAL);
-                    break;
-                case 9:
-                    //top_center_horizontal
-                    editText.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-                    break;
-                case 10:
-                    //bottom_center_horizontal
-                    editText.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-                    break;
-                default:
-                    editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-                    break;
-            }
+            editText.setGravity(gravity);
 
             if (isShowBorder && drawable != null) {
                 drawable.setBackgroundColor(backgroundColor);//设置背景色
@@ -602,5 +555,27 @@ public class SimpleClearEditText extends LinearLayout {
      */
     public void setClearEditTextFocusChangeListener(OnFocusChangeListener onFocusChangeListener) {
         this.onFocusChangeListener = onFocusChangeListener;
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     *
+     * @param dpValue
+     * @return
+     */
+    private int dp2px(float dpValue) {
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 将px值转换为sp值，保证文字大小不变
+     *
+     * @param pxValue
+     * @return
+     */
+    private int px2sp(float pxValue) {
+        final float fontScale = getContext().getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
     }
 }

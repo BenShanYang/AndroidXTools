@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.expand_text_view, R.id.simple_expand_text_view, R.id.expand_text_list, R.id.round_imageview, R.id.title_bar_view, R.id.password_edit_text})
+    @OnClick({R.id.expand_text_view, R.id.simple_expand_text_view, R.id.expand_text_list, R.id.round_imageview, R.id.title_bar_view, R.id.password_edit_text, R.id.clear_edit_text, R.id.simple_clear_edit_text})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.expand_text_view:
@@ -63,6 +63,12 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.password_edit_text:
                 toActivity(PasswordEditTextActivity.class);
+                break;
+            case R.id.clear_edit_text:
+                toActivity(ClearEditTextActivity.class);
+                break;
+            case R.id.simple_clear_edit_text:
+                toActivity(SimpleClearEditTextActivity.class);
                 break;
         }
     }
