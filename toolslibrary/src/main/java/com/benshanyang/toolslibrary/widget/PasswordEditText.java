@@ -90,6 +90,8 @@ public class PasswordEditText extends FrameLayout {
             ColorStateList textColor = typedArray.getColorStateList(R.styleable.PasswordEditText_textColor);//设置密码字体颜色
             ColorStateList textColorHint = typedArray.getColorStateList(R.styleable.PasswordEditText_textColorHint);//提示文字的颜色
             float textSize = typedArray.getDimension(R.styleable.PasswordEditText_textSize, 0);//设置密码字体文字的大小
+            float borderLeftSpace = typedArray.getDimension(R.styleable.PasswordEditText_borderLeftSpace, 0);//第部边框线的左侧margin
+            float borderRightSpace = typedArray.getDimension(R.styleable.PasswordEditText_borderRightSpace, 0);//第部边框线的右侧margin
             float borderWidth = typedArray.getDimension(R.styleable.PasswordEditText_bottomBorderWidth, 0);//底边宽度
             float iconPaddingLeft = typedArray.getDimension(R.styleable.PasswordEditText_iconPaddingLeft, 0);//icon和左边的距离
             float iconTextPaddingLeft = typedArray.getDimension(R.styleable.PasswordEditText_iconTextPaddingLeft, etPassword.getPaddingLeft());//icon和文字间的距离
@@ -131,7 +133,10 @@ public class PasswordEditText extends FrameLayout {
 
             //设置底边
             if (bottomBorder != null) {
-                bottomBorder.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) borderWidth));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) borderWidth);
+                params.leftMargin = (int) borderLeftSpace;//第部边框线的左侧margin
+                params.rightMargin = (int) borderRightSpace;//第部边框线的右侧margin
+                bottomBorder.setLayoutParams(params);
                 bottomBorder.setBackgroundColor(normalBorderColor);
                 //是否显示底边线
                 switch (borderVisibility) {
@@ -362,6 +367,32 @@ public class PasswordEditText extends FrameLayout {
     }
 
     /**
+     * 设置底部边框距父布局左侧的间距
+     *
+     * @param space 距离值
+     */
+    public void setBorderLeftSpace(int space) {
+        if (bottomBorder != null) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) bottomBorder.getLayoutParams();
+            params.leftMargin = space;//第部边框线的左侧margin
+            bottomBorder.setLayoutParams(params);
+        }
+    }
+
+    /**
+     * 设置底部边框距父布局右侧的间距
+     *
+     * @param space 距离值
+     */
+    public void setBorderRightSpace(int space) {
+        if (bottomBorder != null) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) bottomBorder.getLayoutParams();
+            params.rightMargin = space;//第部边框线的右侧margin
+            bottomBorder.setLayoutParams(params);
+        }
+    }
+
+    /**
      * 获取密码输入框的输入内容
      *
      * @return
@@ -399,7 +430,8 @@ public class PasswordEditText extends FrameLayout {
      *
      * @param onFocusChangeListener 焦点改变的回调接口
      */
-    public void setPWDEditTextFocusChangeListener(OnFocusChangeListener onFocusChangeListener) {
+    public void setPWDEditTextFocusChangeListener(OnFocusChangeListener
+                                                          onFocusChangeListener) {
         this.onFocusChangeListener = onFocusChangeListener;
     }
 
@@ -410,7 +442,8 @@ public class PasswordEditText extends FrameLayout {
      * @param focusedColor 获取焦点的时候线的颜色
      * @param normalColor  失去焦点的时候线的颜色
      */
-    public void setBottomBorder(int borderWidth, @ColorInt int focusedColor, @ColorInt int normalColor) {
+    public void setBottomBorder(int borderWidth, @ColorInt int focusedColor,
+                                @ColorInt int normalColor) {
         //设置线的宽度
         if (bottomBorder != null) {
             bottomBorder.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, borderWidth));

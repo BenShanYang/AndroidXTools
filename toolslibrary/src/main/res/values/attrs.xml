@@ -264,6 +264,8 @@
         <attr name="textColorHint" />
         <attr name="focusedBorderColor" />
         <attr name="normalBorderColor" />
+        <attr name="borderLeftSpace" format="dimension" />
+        <attr name="borderRightSpace" format="dimension" />
 
         <attr name="text" />
         <attr name="digits" />
