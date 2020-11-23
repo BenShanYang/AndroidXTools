@@ -45,7 +45,6 @@ public class RoundedImageViewActivity extends BaseActivity {
         image6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //image6.setSelected(true);
             }
         });
     }

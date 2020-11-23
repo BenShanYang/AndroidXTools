@@ -19,6 +19,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.benshanyang.toolslibrary.R;
 import com.benshanyang.toolslibrary.utils.DensityUtils;
@@ -87,9 +88,10 @@ public class TitleBarView extends FrameLayout {
             float btnDrawablePadding = typedArray.getDimension(R.styleable.TitleBarView_buttonDrawablePadding, 0);//文字按钮DrawablePadding
             borderWidth = typedArray.getDimension(R.styleable.TitleBarView_borderWidth, 0);//底边宽度
             float titleBarHeight = typedArray.getDimension(R.styleable.TitleBarView_titleBarHeight, -1);//标题栏高度
+            ColorStateList backImageColor = typedArray.getColorStateList(R.styleable.TitleBarView_backImageColor);//返回按钮图片的颜色
+            ColorStateList buttonDrawableColor = typedArray.getColorStateList(R.styleable.TitleBarView_buttonDrawableColor);//右侧功能按钮的颜色
             Drawable ibBackIcon = typedArray.getDrawable(R.styleable.TitleBarView_backImageSrc);//返回按钮图片
-            Drawable ibIcon = typedArray.getDrawable(R.styleable.TitleBarView_imageButtonSrc);//图片按钮
-            Drawable btnDrawableTop = typedArray.getDrawable(R.styleable.TitleBarView_buttonDrawableTop);//文字按钮的图片
+            Drawable ibIcon = typedArray.getDrawable(R.styleable.TitleBarView_buttonDrawable);//图片按钮或文字按钮的图片
             int btnType = typedArray.getInt(R.styleable.TitleBarView_buttonType, -1);//要显示哪种类型的功能按钮
             immersionStatusBar = typedArray.getBoolean(R.styleable.TitleBarView_immersionStatusBar, false);//沉浸式状态栏
             int finishActivityVisibility = typedArray.getInt(R.styleable.TitleBarView_finishActivityVisibility, -1);//是否显示标题栏返回按钮
@@ -108,21 +110,58 @@ public class TitleBarView extends FrameLayout {
                 }
             }
 
-            //设置返回按钮图片
-            if (ibBack != null && ibBackIcon != null) {
-                ibBack.setImageDrawable(ibBackIcon);
+            if (ibBack != null) {
+                if (ibBackIcon != null) {
+                    if (backImageColor != null) {
+                        //设置返回按钮的颜色
+                        Drawable wrappedDrawable = DrawableCompat.wrap(ibBackIcon);
+                        DrawableCompat.setTintList(wrappedDrawable, backImageColor);
+                        ibBack.setImageDrawable(wrappedDrawable);
+                    } else {
+                        //设置返回按钮图片
+                        ibBack.setImageDrawable(ibBackIcon);
+                    }
+                } else {
+                    //设置返回按钮的颜色
+                    if (backImageColor != null) {
+                        ibBack.setColorFilter(backImageColor.getDefaultColor());
+                    }
+                }
+
             }
 
-            //图片按钮
-            if (ibActionBtn != null && ibIcon != null) {
-                ibActionBtn.setImageDrawable(ibIcon);
+            if (ibActionBtn != null) {
+                if (ibIcon != null) {
+                    if (buttonDrawableColor != null) {
+                        //右侧功能按钮的图片颜色
+                        Drawable wrappedDrawable = DrawableCompat.wrap(ibIcon);
+                        DrawableCompat.setTintList(wrappedDrawable, buttonDrawableColor);
+                        ibActionBtn.setImageDrawable(wrappedDrawable);
+                    } else {
+                        //图片按钮
+                        ibActionBtn.setImageDrawable(ibIcon);
+                    }
+                } else {
+                    //右侧功能按钮的图片颜色
+                    if (buttonDrawableColor != null) {
+                        ibActionBtn.setColorFilter(buttonDrawableColor.getDefaultColor());
+                    }
+                }
+
             }
 
             //文字按钮
             if (btnActionBtn != null) {
                 //设置文字按钮的icon
-                if (btnDrawableTop != null) {
-                    btnActionBtn.setCompoundDrawablesWithIntrinsicBounds(null, btnDrawableTop, null, null);
+                if (ibIcon != null) {
+                    if (buttonDrawableColor != null) {
+                        //右侧功能按钮的图片颜色
+                        Drawable wrappedDrawable = DrawableCompat.wrap(ibIcon);
+                        DrawableCompat.setTintList(wrappedDrawable, buttonDrawableColor);
+                        btnActionBtn.setCompoundDrawablesWithIntrinsicBounds(null, wrappedDrawable, null, null);
+                    } else {
+                        btnActionBtn.setCompoundDrawablesWithIntrinsicBounds(null, ibIcon, null, null);
+                    }
                     btnActionBtn.setCompoundDrawablePadding((int) btnDrawablePadding);
                 }
                 btnActionBtn.setText(TextUtils.isEmpty(btnStr) ? "" : btnStr);

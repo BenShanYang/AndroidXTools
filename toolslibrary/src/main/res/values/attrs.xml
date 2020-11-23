@@ -196,11 +196,7 @@
         <attr name="cornerRadius" />
         <attr name="borderWidth" />
         <attr name="borderColor" />
-        <attr name="selectedBorderWidth" format="dimension" />
-        <attr name="selectedBorderColor" format="color" />
-        <attr name="selectedMaskColor" format="color" />
         <attr name="maskColor" format="color" />
-        <attr name="touchSelectModeEnabled" format="boolean" />
         <attr name="cornerTopLeftRadius" format="dimension" />
         <attr name="cornerTopRightRadius" format="dimension" />
         <attr name="cornerBottomLeftRadius" format="dimension" />
@@ -258,6 +254,9 @@
         <attr name="iconTextPaddingRight" format="dimension" />
         <attr name="textSize" />
 
+        <attr name="iconColor" format="color" />
+        <attr name="passwordClearImageColor" format="color" />
+        <attr name="passwordSwitchImageColor" format="color" />
         <attr name="icon" />
         <attr name="passwordSwitchSrc" format="reference" />
         <attr name="passwordClearSrc" format="reference" />
@@ -297,9 +296,10 @@
         <attr name="titleBarBackgroundColor" format="color" />
         <attr name="titleTextColor" />
         <attr name="buttonTextColor" format="reference|color" />
-        <attr name="buttonDrawableTop" format="reference" />
-        <attr name="imageButtonSrc" format="reference" />
+        <attr name="buttonDrawable" format="reference" />
+        <attr name="buttonDrawableColor" format="color" />
         <attr name="backImageSrc" format="reference" />
+        <attr name="backImageColor" format="color" />
 
         <attr name="buttonType" format="enum">
             <enum name="image_button" value="0" />

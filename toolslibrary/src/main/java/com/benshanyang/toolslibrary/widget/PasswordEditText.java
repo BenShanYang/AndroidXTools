@@ -92,15 +92,19 @@ public class PasswordEditText extends FrameLayout {
             float textSize = typedArray.getDimension(R.styleable.PasswordEditText_textSize, 0);//设置密码字体文字的大小
             float borderWidth = typedArray.getDimension(R.styleable.PasswordEditText_bottomBorderWidth, 0);//底边宽度
             float iconPaddingLeft = typedArray.getDimension(R.styleable.PasswordEditText_iconPaddingLeft, 0);//icon和左边的距离
-            float iconTextPaddingLeft = typedArray.getDimension(R.styleable.PasswordEditText_iconTextPaddingLeft, etPassword.getPaddingLeft());//icon和文字见的距离
-            float iconTextPaddingRight = typedArray.getDimension(R.styleable.PasswordEditText_iconTextPaddingRight, etPassword.getPaddingRight());//icon和文字见的距离
+            float iconTextPaddingLeft = typedArray.getDimension(R.styleable.PasswordEditText_iconTextPaddingLeft, etPassword.getPaddingLeft());//icon和文字间的距离
+            float iconTextPaddingRight = typedArray.getDimension(R.styleable.PasswordEditText_iconTextPaddingRight, etPassword.getPaddingRight());//icon和文字间的距离
             String hint = typedArray.getString(R.styleable.PasswordEditText_hint);//提示文字
             String text = typedArray.getString(R.styleable.PasswordEditText_text);//设置密码输入框文字
             pwdDigits = typedArray.getString(R.styleable.PasswordEditText_digits);//密码输入框的过滤字符串
             maxLength = typedArray.getInteger(R.styleable.PasswordEditText_maxLength, Integer.MAX_VALUE);//最大输入的密码位数默认是30位
 
+            int iconColor = typedArray.getColor(R.styleable.PasswordEditText_iconColor, -1);//密码前面小图标的颜色
+            int clearImageColor = typedArray.getColor(R.styleable.PasswordEditText_passwordClearImageColor, -1);//清空按钮的颜色
+            int switchImageColor = typedArray.getColor(R.styleable.PasswordEditText_passwordSwitchImageColor, -1);//密码可见按钮的颜色
+
             Drawable icon = typedArray.getDrawable(R.styleable.PasswordEditText_icon);//密码输入框最左侧小图标
-            Drawable passwordSwitchSwitchSrc = typedArray.getDrawable(R.styleable.PasswordEditText_passwordSwitchSrc);//密码显示隐藏小图标
+            Drawable passwordSwitchSrc = typedArray.getDrawable(R.styleable.PasswordEditText_passwordSwitchSrc);//密码显示隐藏小图标
             Drawable passwordClearSrc = typedArray.getDrawable(R.styleable.PasswordEditText_passwordClearSrc);//密码清除按钮
 
             //选择右侧功能按钮的显示样式
@@ -148,19 +152,37 @@ public class PasswordEditText extends FrameLayout {
                 }
             }
 
-            //左侧密码输入框的小图标
-            if (ibIcon != null && icon != null) {
-                ibIcon.setImageDrawable(icon);
+            if (ibIcon != null) {
+                //左侧密码输入框的小图标
+                if (icon != null) {
+                    ibIcon.setImageDrawable(icon);
+                }
+                //左侧密码输入框的小图标颜色
+                if (iconColor != -1) {
+                    ibIcon.setColorFilter(iconColor);
+                }
             }
 
-            //密码清除按钮
-            if (ibClear != null && passwordClearSrc != null) {
-                ibClear.setImageDrawable(passwordClearSrc);
+            if (ibClear != null) {
+                //密码清除按钮
+                if (passwordClearSrc != null) {
+                    ibClear.setImageDrawable(passwordClearSrc);
+                }
+                //密码清除按钮颜色
+                if (clearImageColor != -1) {
+                    ibClear.setColorFilter(clearImageColor);
+                }
             }
 
-            //密码显示隐藏按钮
-            if (ibShowHidePwd != null && passwordSwitchSwitchSrc != null) {
-                ibShowHidePwd.setImageDrawable(passwordSwitchSwitchSrc);
+            if (ibShowHidePwd != null) {
+                //密码显示隐藏按钮
+                if (passwordSwitchSrc != null) {
+                    ibShowHidePwd.setImageDrawable(passwordSwitchSrc);
+                }
+                //密码显示隐藏按钮颜色
+                if (switchImageColor != -1) {
+                    ibShowHidePwd.setColorFilter(switchImageColor);
+                }
             }
 
             if (etPassword != null) {

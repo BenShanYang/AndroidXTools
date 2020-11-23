@@ -43,18 +43,12 @@ public class RoundImageView extends AppCompatImageView {
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
     private static final int COLOR_DRAWABLE_DIMEN = 2;
 
-    private boolean mIsSelected = false;
     private boolean mIsOval = false;
     private boolean mIsCircle = false;
 
     private int maskColor;
     private int mBorderWidth;
     private int mBorderColor;
-
-    private int mSelectedBorderWidth;
-    private int mSelectedBorderColor;
-    private int mSelectedMaskColor;
-    private boolean mIsTouchSelectModeEnabled = true;
 
     private int cornerRadius = 0; // 统一设置圆角半径，优先级高于单独设置每个角的半径
     private int cornerTopLeftRadius = 0; // 左上角圆角半径
@@ -65,10 +59,10 @@ public class RoundImageView extends AppCompatImageView {
     private Paint mBitmapPaint;
     private Paint mBorderPaint;
     private ColorFilter mColorFilter;
-    private ColorFilter mSelectedColorFilter;
     private BitmapShader mBitmapShader;
     private boolean mNeedResetShader = false;
 
+    private Path path = new Path();
     private RectF mRectF = new RectF();
     private RectF mDrawRectF = new RectF();
 
@@ -108,13 +102,6 @@ public class RoundImageView extends AppCompatImageView {
             mColorFilter = new PorterDuffColorFilter(maskColor, PorterDuff.Mode.SRC_ATOP);
         }
 
-        mSelectedBorderWidth = ta.getDimensionPixelSize(R.styleable.RoundImageView_selectedBorderWidth, mBorderWidth);
-        mSelectedBorderColor = ta.getColor(R.styleable.RoundImageView_selectedBorderColor, mBorderColor);
-        mSelectedMaskColor = ta.getColor(R.styleable.RoundImageView_selectedMaskColor, Color.TRANSPARENT);
-        if (mSelectedMaskColor != Color.TRANSPARENT) {
-            mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.SRC_ATOP);
-        }
-        mIsTouchSelectModeEnabled = ta.getBoolean(R.styleable.RoundImageView_touchSelectModeEnabled, true);
         mIsCircle = ta.getBoolean(R.styleable.RoundImageView_isCircle, false);
         if (!mIsCircle) {
             mIsOval = ta.getBoolean(R.styleable.RoundImageView_isOval, false);
@@ -184,39 +171,6 @@ public class RoundImageView extends AppCompatImageView {
         }
     }
 
-    public void setSelectedBorderColor(@ColorInt int selectedBorderColor) {
-        if (mSelectedBorderColor != selectedBorderColor) {
-            mSelectedBorderColor = selectedBorderColor;
-            if (mIsSelected) {
-                invalidate();
-            }
-        }
-
-    }
-
-    public void setSelectedBorderWidth(int selectedBorderWidth) {
-        if (mSelectedBorderWidth != selectedBorderWidth) {
-            mSelectedBorderWidth = selectedBorderWidth;
-            if (mIsSelected) {
-                invalidate();
-            }
-        }
-    }
-
-    public void setSelectedMaskColor(@ColorInt int selectedMaskColor) {
-        if (mSelectedMaskColor != selectedMaskColor) {
-            mSelectedMaskColor = selectedMaskColor;
-            if (mSelectedMaskColor != Color.TRANSPARENT) {
-                mSelectedColorFilter = new PorterDuffColorFilter(mSelectedMaskColor, PorterDuff.Mode.SRC_ATOP);
-            } else {
-                mSelectedColorFilter = null;
-            }
-            if (mIsSelected) {
-                invalidate();
-            }
-        }
-    }
-
     public void setMaskColor(@ColorInt int maskColor) {
         if (RoundImageView.this.maskColor != maskColor) {
             RoundImageView.this.maskColor = maskColor;
@@ -225,9 +179,7 @@ public class RoundImageView extends AppCompatImageView {
             } else {
                 mColorFilter = null;
             }
-            if (!mIsSelected) {
-                invalidate();
-            }
+            invalidate();
         }
     }
 
@@ -268,18 +220,6 @@ public class RoundImageView extends AppCompatImageView {
         return cornerRadius;
     }
 
-    public int getSelectedBorderColor() {
-        return mSelectedBorderColor;
-    }
-
-    public int getSelectedBorderWidth() {
-        return mSelectedBorderWidth;
-    }
-
-    public int getSelectedMaskColor() {
-        return mSelectedMaskColor;
-    }
-
     public int getMaskColor() {
         return maskColor;
     }
@@ -308,40 +248,10 @@ public class RoundImageView extends AppCompatImageView {
         return !mIsCircle && mIsOval;
     }
 
-    public boolean isSelected() {
-        return mIsSelected;
-    }
-
-    public void setSelected(boolean isSelected) {
-        if (mIsSelected != isSelected) {
-            mIsSelected = isSelected;
-            invalidate();
-        }
-    }
-
-    public void setTouchSelectModeEnabled(boolean touchSelectModeEnabled) {
-        mIsTouchSelectModeEnabled = touchSelectModeEnabled;
-    }
-
-    public boolean isTouchSelectModeEnabled() {
-        return mIsTouchSelectModeEnabled;
-    }
-
-    public void setSelectedColorFilter(ColorFilter cf) {
-        if (mSelectedColorFilter != cf) {
-            mSelectedColorFilter = cf;
-            if (mIsSelected) {
-                invalidate();
-            }
-        }
-    }
-
     public void setColorFilter(ColorFilter cf) {
         if (mColorFilter != cf) {
             mColorFilter = cf;
-            if (!mIsSelected) {
-                invalidate();
-            }
+            invalidate();
         }
     }
 
@@ -544,7 +454,7 @@ public class RoundImageView extends AppCompatImageView {
 
     private void drawBitmap(Canvas canvas, int borderWidth) {
         final float halfBorderWidth = borderWidth * 1.0f / 2;
-        mBitmapPaint.setColorFilter(mIsSelected ? mSelectedColorFilter : mColorFilter);
+        mBitmapPaint.setColorFilter(mColorFilter);
 
         if (mIsCircle) {
             canvas.drawCircle(mRectF.centerX(), mRectF.centerY(), (Math.min(mRectF.width() / 2, mRectF.height() / 2)) - halfBorderWidth, mBitmapPaint);
@@ -559,13 +469,13 @@ public class RoundImageView extends AppCompatImageView {
                 if (cornerRadius > 0) {
                     canvas.drawRoundRect(mDrawRectF, cornerRadius, cornerRadius, mBitmapPaint);
                 } else {
-                    Path path = new Path();
                     borderRadii[0] = borderRadii[1] = cornerTopLeftRadius;
                     borderRadii[2] = borderRadii[3] = cornerTopRightRadius;
                     borderRadii[4] = borderRadii[5] = cornerBottomRightRadius;
                     borderRadii[6] = borderRadii[7] = cornerBottomLeftRadius;
                     path.addRoundRect(mDrawRectF, borderRadii, Path.Direction.CCW);
                     canvas.drawPath(path, mBitmapPaint);
+                    path.reset();
                 }
             }
         }
@@ -574,7 +484,7 @@ public class RoundImageView extends AppCompatImageView {
     private void drawBorder(Canvas canvas, int borderWidth) {
         if (borderWidth > 0) {
             final float halfBorderWidth = borderWidth * 1.0f / 2;
-            mBorderPaint.setColor(mIsSelected ? mSelectedBorderColor : mBorderColor);
+            mBorderPaint.setColor(mBorderColor);
             mBorderPaint.setStrokeWidth(borderWidth);
             if (mIsCircle) {
                 canvas.drawCircle(mRectF.centerX(), mRectF.centerY(), Math.min(mRectF.width(), mRectF.height()) / 2 - halfBorderWidth, mBorderPaint);
@@ -589,13 +499,13 @@ public class RoundImageView extends AppCompatImageView {
                     if (cornerRadius > 0) {
                         canvas.drawRoundRect(mDrawRectF, cornerRadius, cornerRadius, mBorderPaint);
                     } else {
-                        Path path = new Path();
                         borderRadii[0] = borderRadii[1] = cornerTopLeftRadius;
                         borderRadii[2] = borderRadii[3] = cornerTopRightRadius;
                         borderRadii[4] = borderRadii[5] = cornerBottomRightRadius;
                         borderRadii[6] = borderRadii[7] = cornerBottomLeftRadius;
                         path.addRoundRect(mDrawRectF, borderRadii, Path.Direction.CCW);
                         canvas.drawPath(path, mBorderPaint);
+                        path.reset();
                     }
                 }
             }
@@ -609,7 +519,7 @@ public class RoundImageView extends AppCompatImageView {
             return;
         }
 
-        int borderWidth = mIsSelected ? mSelectedBorderWidth : mBorderWidth;
+        int borderWidth = mBorderWidth;
 
         if (mBitmap == null || mBitmapShader == null) {
             drawBorder(canvas, borderWidth);
@@ -627,27 +537,4 @@ public class RoundImageView extends AppCompatImageView {
         drawBorder(canvas, borderWidth);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!this.isClickable()) {
-            this.setSelected(false);
-            return super.onTouchEvent(event);
-        }
-
-        if (!mIsTouchSelectModeEnabled) {
-            return super.onTouchEvent(event);
-        }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                this.setSelected(true);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_SCROLL:
-            case MotionEvent.ACTION_OUTSIDE:
-            case MotionEvent.ACTION_CANCEL:
-                this.setSelected(false);
-                break;
-        }
-        return super.onTouchEvent(event);
-    }
 }

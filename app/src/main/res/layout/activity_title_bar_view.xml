@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.TitleBarViewActivity">
+
+    <com.benshanyang.toolslibrary.widget.TitleBarView
+        android:id="@+id/title_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0078D7"
+        app:actionButtonVisibility="visible"
+        app:backImageColor="@android:color/white"
+        app:borderColor="#D5D5D5"
+        app:borderWidth="2px"
+        app:buttonDrawable="@drawable/ic_share"
+        app:buttonDrawableColor="@drawable/white_read_press_drawable"
+        app:buttonDrawablePadding="0dp"
+        app:buttonText="分享"
+        app:buttonTextColor="@drawable/white_read_press_drawable"
+        app:buttonTextSize="10sp"
+        app:buttonType="text_button"
+        app:immersionStatusBar="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleBarBackgroundColor="#1F90EA"
+        app:titleBarHeight="?android:attr/actionBarSize"
+        app:titleText="TitleBarView"
+        app:titleTextColor="@color/colorPrimary"
+        app:titleTextSize="18sp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
