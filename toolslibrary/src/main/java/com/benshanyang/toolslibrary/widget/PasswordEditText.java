@@ -12,9 +12,11 @@ import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -700,4 +702,62 @@ public class PasswordEditText extends FrameLayout {
         }
     }
 
+    /**
+     * 隐藏软键盘
+     *
+     * @return 是否隐藏成功
+     */
+    public boolean hideKeyboard() {
+        boolean isHide = false;
+        if (null != getEditText()) {
+            InputMethodManager inputManager = (InputMethodManager) getEditText().getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            // 即使当前焦点不在editText，也是可以隐藏的。
+            isHide = inputManager.hideSoftInputFromWindow(getEditText().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        return isHide;
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showKeyboard() {
+        showKeyboard(0);
+    }
+
+    /**
+     * 显示软键盘
+     *
+     * @param delay 延时显示软键盘延时的毫秒数
+     */
+    public void showKeyboard(int delay) {
+        if (null != getEditText()) {
+            if (getEditText().requestFocus()) {
+                if (delay > 0) {
+                    getEditText().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getEditText().getContext().getApplicationContext()
+                                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    }, delay);
+                } else {
+                    InputMethodManager imm = (InputMethodManager) getEditText().getContext().getApplicationContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                }
+            } else {
+                Log.w("PasswordEditText", "showSoftInput() can not get focus");
+            }
+        }
+    }
+
+    /**
+     * 获取输入框控件 用于显示或隐藏键盘
+     *
+     * @return 返回的输入框控件
+     */
+    public EditText getEditText() {
+        return etPassword;
+    }
 }

@@ -6,8 +6,10 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 
 import com.benshanyang.toolslibrary.R;
-import com.benshanyang.toolslibrary.drawable.SelectableTextViewDrawable;
+import com.benshanyang.toolslibrary.drawable.ClickableTextViewDrawable;
 import com.benshanyang.toolslibrary.utils.DensityUtils;
 import com.benshanyang.toolslibrary.utils.ResUtils;
 import com.benshanyang.toolslibrary.utils.TextUtils;
@@ -31,11 +33,11 @@ import static android.util.TypedValue.COMPLEX_UNIT_PX;
  * @version 1.0.0
  * @since
  */
-public class SelectableTextView extends LinearLayout {
+public class ClickableTextView extends LinearLayout {
 
     private TextView tvTitle;//标题文字控件
     private TextView tvContent;//内容文字控件
-    private SelectableTextViewDrawable drawable;//背景Drawable
+    private ClickableTextViewDrawable drawable;//背景Drawable
     private ColorStateList titleTextColor;//标题文字颜色
     private ColorStateList contentTextColor;//内容文字颜色
     private Drawable titleIcon = null;//左侧标题的Icon
@@ -47,22 +49,23 @@ public class SelectableTextView extends LinearLayout {
     @ColorInt
     private int borderColor = Color.TRANSPARENT;//边框颜色 优先于单个设置边框颜色
     @ColorInt
-    private int topBorderNormalColor = Color.TRANSPARENT;//设置上边框未点击时的颜色
+    private int topBorderNormalColor = -1;//设置上边框未点击时的颜色
     @ColorInt
-    private int topBorderPressedColor = Color.TRANSPARENT;//设置上边框点击时的颜色
+    private int topBorderPressedColor = -1;//设置上边框点击时的颜色
     @ColorInt
-    private int bottomBorderNormalColor = Color.TRANSPARENT;//设置下边框未点击时的颜色
+    private int bottomBorderNormalColor = -1;//设置下边框未点击时的颜色
     @ColorInt
-    private int bottomBorderPressedColor = Color.TRANSPARENT;//设置下边框点击时的颜色
+    private int bottomBorderPressedColor = -1;//设置下边框点击时的颜色
     private int maxLines = 0;//最多行数
 
     private boolean isSingleLine = false;//是否单行
 
+    private int defaultTextSize;//默认字体大小
+    private int titleTextSize;//标题文字大小
+    private int contentTextSize;//内容文字大小
     private float titleContentSpace = 0f;//标题内容的间距
     private float titleDrawablePadding = 0f;//标题文字图标的间距
     private float contentDrawablePadding = 0f;//内容文字图标的间距
-    private float titleTextSize = 14f;//标题文字大小
-    private float contentTextSize = 14f;//内容文字大小
     private float topBorderWidth = 0f;//上边框的粗细
     private float bottomBorderWidth = 0f;//下边框的粗细
     private float topBorderLeftSpace = 0f;//上边框距离左侧的距离
@@ -73,20 +76,20 @@ public class SelectableTextView extends LinearLayout {
     private String titleStr = "";//标题文字
     private String contentStr = "";//内容文字
 
-    public SelectableTextView(Context context) {
+    public ClickableTextView(Context context) {
         super(context);
         initWidget(context);
         initSettings(context);
     }
 
-    public SelectableTextView(Context context, @Nullable AttributeSet attrs) {
+    public ClickableTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initWidget(context);
         initAttrs(context, attrs);
         initSettings(context);
     }
 
-    public SelectableTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ClickableTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initWidget(context);
         initAttrs(context, attrs);
@@ -94,101 +97,107 @@ public class SelectableTextView extends LinearLayout {
     }
 
     private void initWidget(Context context) {
+        defaultTextSize = sp2px(14f);
+        titleTextSize = defaultTextSize;//标题文字大小
+        contentTextSize = defaultTextSize;//内容文字大小
+
+        FrameLayout frameLayout = new FrameLayout(context);
         tvTitle = new TextView(context);
         tvContent = new TextView(context);
 
         tvTitle.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         tvContent.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
 
+        frameLayout.addView(tvContent, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
         addView(tvTitle, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-        addView(tvContent, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        addView(frameLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        drawable = new SelectableTextViewDrawable();
+        drawable = new ClickableTextViewDrawable();
         setBackground(drawable);
         setOrientation(HORIZONTAL);
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SelectableTextView, 0, 0);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ClickableTextView, 0, 0);
         if (typedArray != null) {
             for (int i = 0; i < typedArray.getIndexCount(); i++) {
                 int attr = typedArray.getIndex(i);
-                if (attr == R.styleable.SelectableTextView_titleIcon) {
+                if (attr == R.styleable.ClickableTextView_titleIcon) {
                     //标题的Icon
                     titleIcon = typedArray.getDrawable(attr);
-                } else if (attr == R.styleable.SelectableTextView_contentRightIcon) {
+                } else if (attr == R.styleable.ClickableTextView_contentRightIcon) {
                     //内容左侧的Icon
                     contentRightIcon = typedArray.getDrawable(attr);
-                } else if (attr == R.styleable.SelectableTextView_contentLeftIcon) {
+                } else if (attr == R.styleable.ClickableTextView_contentLeftIcon) {
                     //内容右侧的Icon
                     contentLeftIcon = typedArray.getDrawable(attr);
-                } else if (attr == R.styleable.SelectableTextView_titleDrawablePadding) {
+                } else if (attr == R.styleable.ClickableTextView_titleDrawablePadding) {
                     //标题文字图标的间距
                     titleDrawablePadding = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_contentDrawablePadding) {
+                } else if (attr == R.styleable.ClickableTextView_contentDrawablePadding) {
                     //内容文字图标的间距
                     contentDrawablePadding = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_titleContentSpace) {
+                } else if (attr == R.styleable.ClickableTextView_titleContentSpace) {
                     //标题和内容的间距
                     titleContentSpace = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_titleTextSize) {
+                } else if (attr == R.styleable.ClickableTextView_titleTextSize) {
                     //标题文字的大小
-                    titleTextSize = typedArray.getDimension(attr, 14f);
-                } else if (attr == R.styleable.SelectableTextView_titleTextColor) {
+                    titleTextSize = typedArray.getDimensionPixelSize(attr, defaultTextSize);
+                } else if (attr == R.styleable.ClickableTextView_titleTextColor) {
                     //标题文字的颜色
                     titleTextColor = typedArray.getColorStateList(attr);
-                } else if (attr == R.styleable.SelectableTextView_titleText) {
+                } else if (attr == R.styleable.ClickableTextView_titleText) {
                     //标题文字
                     titleStr = typedArray.getString(attr);
-                } else if (attr == R.styleable.SelectableTextView_contentTextSize) {
+                } else if (attr == R.styleable.ClickableTextView_contentTextSize) {
                     //内容文字的大小
-                    contentTextSize = typedArray.getDimension(attr, 14f);
-                } else if (attr == R.styleable.SelectableTextView_contentTextColor) {
+                    contentTextSize = typedArray.getDimensionPixelSize(attr, defaultTextSize);
+                } else if (attr == R.styleable.ClickableTextView_contentTextColor) {
                     //内容文字的颜色
                     contentTextColor = typedArray.getColorStateList(attr);
-                } else if (attr == R.styleable.SelectableTextView_contentText) {
+                } else if (attr == R.styleable.ClickableTextView_contentText) {
                     //内容文字
                     contentStr = typedArray.getString(attr);
-                } else if (attr == R.styleable.SelectableTextView_singleLine) {
+                } else if (attr == R.styleable.ClickableTextView_singleLine) {
                     //内容文字是否单行
                     isSingleLine = typedArray.getBoolean(attr, false);
-                } else if (attr == R.styleable.SelectableTextView_maxLines) {
+                } else if (attr == R.styleable.ClickableTextView_maxLines) {
                     //内容是否多行
                     maxLines = typedArray.getInt(attr, 0);
-                } else if (attr == R.styleable.SelectableTextView_backgroundColor) {
+                } else if (attr == R.styleable.ClickableTextView_backgroundColor) {
                     //背景色
                     backgroundColor = typedArray.getColor(attr, Color.TRANSPARENT);
-                } else if (attr == R.styleable.SelectableTextView_borderColor) {
+                } else if (attr == R.styleable.ClickableTextView_borderColor) {
                     //分割线颜色
                     borderColor = typedArray.getColor(attr, Color.TRANSPARENT);
-                } else if (attr == R.styleable.SelectableTextView_topBorderNormalColor) {
+                } else if (attr == R.styleable.ClickableTextView_topBorderNormalColor) {
                     //上分割线未点击时的颜色
-                    topBorderNormalColor = typedArray.getColor(attr, Color.TRANSPARENT);
-                } else if (attr == R.styleable.SelectableTextView_topBorderPressedColor) {
+                    topBorderNormalColor = typedArray.getColor(attr, -1);
+                } else if (attr == R.styleable.ClickableTextView_topBorderPressedColor) {
                     //上分割线点击时的颜色
-                    topBorderPressedColor = typedArray.getColor(attr, Color.TRANSPARENT);
-                } else if (attr == R.styleable.SelectableTextView_bottomBorderNormalColor) {
+                    topBorderPressedColor = typedArray.getColor(attr, -1);
+                } else if (attr == R.styleable.ClickableTextView_bottomBorderNormalColor) {
                     //底部分割线未点击时的颜色
-                    bottomBorderNormalColor = typedArray.getColor(attr, Color.TRANSPARENT);
-                } else if (attr == R.styleable.SelectableTextView_bottomBorderPressedColor) {
+                    bottomBorderNormalColor = typedArray.getColor(attr, -1);
+                } else if (attr == R.styleable.ClickableTextView_bottomBorderPressedColor) {
                     //底部分割线点击时的颜色
-                    bottomBorderPressedColor = typedArray.getColor(attr, Color.TRANSPARENT);
-                } else if (attr == R.styleable.SelectableTextView_topBorderWidth) {
+                    bottomBorderPressedColor = typedArray.getColor(attr, -1);
+                } else if (attr == R.styleable.ClickableTextView_topBorderWidth) {
                     //上分割线的粗细
                     topBorderWidth = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_bottomBorderWidth) {
+                } else if (attr == R.styleable.ClickableTextView_bottomBorderWidth) {
                     //下分割线的粗细
                     bottomBorderWidth = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_topBorderLeftSpace) {
+                } else if (attr == R.styleable.ClickableTextView_topBorderLeftSpace) {
                     //上分割线距最左侧的距离
                     topBorderLeftSpace = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_topBorderRightSpace) {
+                } else if (attr == R.styleable.ClickableTextView_topBorderRightSpace) {
                     //上分割线距最右侧的距离
                     topBorderRightSpace = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_bottomBorderLeftSpace) {
+                } else if (attr == R.styleable.ClickableTextView_bottomBorderLeftSpace) {
                     //下分割线距最左侧的距离
                     bottomBorderLeftSpace = typedArray.getDimension(attr, 0f);
-                } else if (attr == R.styleable.SelectableTextView_bottomBorderRightSpace) {
+                } else if (attr == R.styleable.ClickableTextView_bottomBorderRightSpace) {
                     //下分割线距最右侧的距离
                     bottomBorderRightSpace = typedArray.getDimension(attr, 0f);
                 }
@@ -211,7 +220,7 @@ public class SelectableTextView extends LinearLayout {
         }
 
         if (tvTitle != null) {
-            tvTitle.setTextSize(DensityUtils.px2sp(context, titleTextSize));
+            tvTitle.setTextSize(COMPLEX_UNIT_PX, titleTextSize);
             TextUtils.setDrawable(tvTitle, titleStr, titleIcon, (int) titleDrawablePadding, com.benshanyang.toolslibrary.constant.Gravity.LEFT);
             if (titleTextColor != null) {
                 tvTitle.setTextColor(titleTextColor);
@@ -219,8 +228,8 @@ public class SelectableTextView extends LinearLayout {
         }
 
         if (tvContent != null) {
-            ((LayoutParams) tvContent.getLayoutParams()).leftMargin = (int) titleContentSpace;
-            tvContent.setTextSize(DensityUtils.px2sp(context, contentTextSize));
+            ((FrameLayout.LayoutParams) tvContent.getLayoutParams()).leftMargin = (int) titleContentSpace;
+            tvContent.setTextSize(COMPLEX_UNIT_PX, contentTextSize);
             TextUtils.setDrawable(tvContent, contentStr, (int) contentDrawablePadding, contentLeftIcon, null, contentRightIcon, null);
             if (isSingleLine) {
                 tvContent.setSingleLine(isSingleLine);
@@ -251,19 +260,19 @@ public class SelectableTextView extends LinearLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isClickable() && borderColor == Color.TRANSPARENT) {
+        if (isClickable()) {
             int listener = event.getAction();
             if (listener == MotionEvent.ACTION_DOWN) {
                 //按下
-                drawable.setTopBorderColor(topBorderPressedColor);
-                drawable.setBottomBorderColor(bottomBorderPressedColor);
+                drawable.setTopBorderColor(topBorderPressedColor != -1 ? topBorderPressedColor : (topBorderNormalColor != -1 ? topBorderNormalColor : borderColor));
+                drawable.setBottomBorderColor(bottomBorderPressedColor != -1 ? bottomBorderPressedColor : (bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor));
             } else if (listener == MotionEvent.ACTION_MOVE) {
                 //移动
-                drawable.setTopBorderColor(topBorderPressedColor);
-                drawable.setBottomBorderColor(bottomBorderPressedColor);
+                drawable.setTopBorderColor(topBorderPressedColor != -1 ? topBorderPressedColor : (topBorderNormalColor != -1 ? topBorderNormalColor : borderColor));
+                drawable.setBottomBorderColor(bottomBorderPressedColor != -1 ? bottomBorderPressedColor : (bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor));
             } else {
-                drawable.setTopBorderColor(topBorderNormalColor);
-                drawable.setBottomBorderColor(bottomBorderNormalColor);
+                drawable.setTopBorderColor(topBorderNormalColor != -1 ? topBorderNormalColor : borderColor);
+                drawable.setBottomBorderColor(bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor);
             }
         }
         return super.onTouchEvent(event);
@@ -324,7 +333,7 @@ public class SelectableTextView extends LinearLayout {
      */
     public void setTitleContentSpace(int space) {
         if (tvContent != null) {
-            ((LayoutParams) tvContent.getLayoutParams()).leftMargin = space;
+            ((FrameLayout.LayoutParams) tvContent.getLayoutParams()).leftMargin = space;
         }
     }
 
@@ -381,6 +390,7 @@ public class SelectableTextView extends LinearLayout {
 
     /**
      * 获取标题文字
+     *
      * @return
      */
     public CharSequence getTitle() {
@@ -392,6 +402,7 @@ public class SelectableTextView extends LinearLayout {
 
     /**
      * 获取内容文字
+     *
      * @return
      */
     public CharSequence getContent() {
@@ -653,6 +664,17 @@ public class SelectableTextView extends LinearLayout {
                 drawable.setBottomBorderRightSpace(bottomBorderRightSpace);
             }
         }
+    }
+
+    /**
+     * 将sp值转换为px值，保证文字大小不变
+     *
+     * @param spValue
+     * @return
+     */
+    private int sp2px(float spValue) {
+        final float fontScale = getContext().getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
     }
 
 }

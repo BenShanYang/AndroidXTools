@@ -27,19 +27,22 @@ public class BorderTextView extends AppCompatTextView {
     @ColorInt
     private int borderColor = Color.TRANSPARENT;//边框颜色 优先于单个设置边框颜色
     @ColorInt
-    private int topBorderNormalColor = Color.TRANSPARENT;//设置上边框未点击时的颜色
+    private int topBorderNormalColor = -1;//设置上边框未点击时的颜色
     @ColorInt
-    private int topBorderPressedColor = Color.TRANSPARENT;//设置上边框点击时的颜色
+    private int topBorderPressedColor = -1;//设置上边框点击时的颜色
     @ColorInt
-    private int bottomBorderNormalColor = Color.TRANSPARENT;//设置下边框未点击时的颜色
+    private int bottomBorderNormalColor = -1;//设置下边框未点击时的颜色
     @ColorInt
-    private int bottomBorderPressedColor = Color.TRANSPARENT;//设置下边框点击时的颜色
+    private int bottomBorderPressedColor = -1;//设置下边框点击时的颜色
     private float topBorderWidth = 0f;//上边框的粗细
     private float bottomBorderWidth = 0f;//下边框的粗细
     private float topBorderLeftSpace = 0f;//上边框距离左侧的距离
     private float topBorderRightSpace = 0f;//上边框距离右侧的距离
     private float bottomBorderLeftSpace = 0f;//下边框距离左侧的距离
     private float bottomBorderRightSpace = 0f;//下边框距离右侧的距离
+
+    private int topBorderVisibility = 0;//上边框是否显示 0显示 1不显示
+    private int bottomBorderVisibility = 0;//下边框是否显示 0显示 1不显示
 
     private BorderTextViewDrawable bgdrawable;//背景样式
 
@@ -73,16 +76,16 @@ public class BorderTextView extends AppCompatTextView {
                     borderColor = typedArray.getColor(attr, Color.TRANSPARENT);
                 } else if (attr == R.styleable.BorderTextView_topBorderNormalColor) {
                     //上分割线未点击时的颜色
-                    topBorderNormalColor = typedArray.getColor(attr, Color.TRANSPARENT);
+                    topBorderNormalColor = typedArray.getColor(attr, -1);
                 } else if (attr == R.styleable.BorderTextView_topBorderPressedColor) {
                     //上分割线点击时的颜色
-                    topBorderPressedColor = typedArray.getColor(attr, Color.TRANSPARENT);
+                    topBorderPressedColor = typedArray.getColor(attr, -1);
                 } else if (attr == R.styleable.BorderTextView_bottomBorderNormalColor) {
                     //底部分割线未点击时的颜色
-                    bottomBorderNormalColor = typedArray.getColor(attr, Color.TRANSPARENT);
+                    bottomBorderNormalColor = typedArray.getColor(attr, -1);
                 } else if (attr == R.styleable.BorderTextView_bottomBorderPressedColor) {
                     //底部分割线点击时的颜色
-                    bottomBorderPressedColor = typedArray.getColor(attr, Color.TRANSPARENT);
+                    bottomBorderPressedColor = typedArray.getColor(attr, -1);
                 } else if (attr == R.styleable.BorderTextView_topBorderWidth) {
                     //上分割线的粗细
                     topBorderWidth = typedArray.getDimension(attr, 0f);
@@ -101,6 +104,10 @@ public class BorderTextView extends AppCompatTextView {
                 } else if (attr == R.styleable.BorderTextView_bottomBorderRightSpace) {
                     //下分割线距最右侧的距离
                     bottomBorderRightSpace = typedArray.getDimension(attr, 0f);
+                } else if (attr == R.styleable.BorderTextView_topBorderVisibility) {
+                    topBorderVisibility = typedArray.getInt(attr, 0);//上边框是否显示 0显示 1不显示
+                } else if (attr == R.styleable.BorderTextView_bottomBorderVisibility) {
+                    bottomBorderVisibility = typedArray.getInt(attr, 0);//下边框是否显示 0显示 1不显示
                 }
             }
             typedArray.recycle();
@@ -109,16 +116,31 @@ public class BorderTextView extends AppCompatTextView {
 
     private void initSettings(Context context) {
         bgdrawable = new BorderTextViewDrawable();
-        bgdrawable.setTopBorderWidth(topBorderWidth);
-        bgdrawable.setBottomBorderWidth(bottomBorderWidth);
-        bgdrawable.setTopBorderLeftSpace(topBorderLeftSpace);
-        bgdrawable.setTopBorderRightSpace(topBorderRightSpace);
-        bgdrawable.setBottomBorderLeftSpace(bottomBorderLeftSpace);
-        bgdrawable.setBottomBorderRightSpace(bottomBorderRightSpace);
-        bgdrawable.setBackgroundColor(backgroundColor);
-        bgdrawable.setBottomBorderColor(borderColor != Color.TRANSPARENT ? borderColor : bottomBorderNormalColor);
-        bgdrawable.setTopBorderColor(borderColor != Color.TRANSPARENT ? borderColor : topBorderNormalColor);
+        if (topBorderVisibility == 0) {
+            bgdrawable.setTopBorderWidth(topBorderWidth);
+            bgdrawable.setTopBorderLeftSpace(topBorderLeftSpace);
+            bgdrawable.setTopBorderRightSpace(topBorderRightSpace);
+            bgdrawable.setTopBorderColor(topBorderNormalColor != -1 ? topBorderNormalColor : borderColor);
+        } else {
+            bgdrawable.setTopBorderWidth(0f);
+            bgdrawable.setTopBorderLeftSpace(0f);
+            bgdrawable.setTopBorderRightSpace(0f);
+            bgdrawable.setTopBorderColor(Color.TRANSPARENT);
+        }
 
+        if (bottomBorderVisibility == 0) {
+            bgdrawable.setBottomBorderWidth(bottomBorderWidth);
+            bgdrawable.setBottomBorderLeftSpace(bottomBorderLeftSpace);
+            bgdrawable.setBottomBorderRightSpace(bottomBorderRightSpace);
+            bgdrawable.setBottomBorderColor(bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor);
+        } else {
+            bgdrawable.setBottomBorderWidth(0f);
+            bgdrawable.setBottomBorderLeftSpace(0f);
+            bgdrawable.setBottomBorderRightSpace(0f);
+            bgdrawable.setBottomBorderColor(Color.TRANSPARENT);
+        }
+
+        bgdrawable.setBackgroundColor(backgroundColor);
         setBackground(bgdrawable);
     }
 
@@ -136,19 +158,19 @@ public class BorderTextView extends AppCompatTextView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isClickable() && borderColor == Color.TRANSPARENT) {
+        if (isClickable()) {
             int listener = event.getAction();
             if (listener == MotionEvent.ACTION_DOWN) {
                 //按下
-                bgdrawable.setTopBorderColor(topBorderPressedColor);
-                bgdrawable.setBottomBorderColor(bottomBorderPressedColor);
+                bgdrawable.setTopBorderColor(topBorderPressedColor != -1 ? topBorderPressedColor : (topBorderNormalColor != -1 ? topBorderNormalColor : borderColor));
+                bgdrawable.setBottomBorderColor(bottomBorderPressedColor != -1 ? bottomBorderPressedColor : (bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor));
             } else if (listener == MotionEvent.ACTION_MOVE) {
                 //移动
-                bgdrawable.setTopBorderColor(topBorderPressedColor);
-                bgdrawable.setBottomBorderColor(bottomBorderPressedColor);
+                bgdrawable.setTopBorderColor(topBorderPressedColor != -1 ? topBorderPressedColor : (topBorderNormalColor != -1 ? topBorderNormalColor : borderColor));
+                bgdrawable.setBottomBorderColor(bottomBorderPressedColor != -1 ? bottomBorderPressedColor : (bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor));
             } else {
-                bgdrawable.setTopBorderColor(topBorderNormalColor);
-                bgdrawable.setBottomBorderColor(bottomBorderNormalColor);
+                bgdrawable.setTopBorderColor(topBorderNormalColor != -1 ? topBorderNormalColor : borderColor);
+                bgdrawable.setBottomBorderColor(bottomBorderNormalColor != -1 ? bottomBorderNormalColor : borderColor);
             }
         }
         return super.onTouchEvent(event);

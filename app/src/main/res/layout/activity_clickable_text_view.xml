@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ClickableTextViewActivity">
+
+    <com.benshanyang.toolslibrary.widget.TitleBarView
+        android:id="@+id/title_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:borderColor="#D5D5D5"
+        app:borderWidth="2px"
+        app:immersionStatusBar="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleBarHeight="?android:attr/actionBarSize"
+        app:titleText="ClickableTextView"
+        app:titleTextSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar_view"
+        app:layout_constraintVertical_bias="0.05">
+
+        <com.benshanyang.toolslibrary.widget.ClickableTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:minHeight="@dimen/dimen_40"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            app:backgroundColor="@android:color/white"
+            app:borderColor="#D5D5D5"
+            app:bottomBorderWidth="@dimen/dimen_1"
+            app:contentDrawablePadding="@dimen/dimen_5"
+            app:contentLeftIcon="@drawable/ic_version"
+            app:contentRightIcon="@drawable/ic_more"
+            app:contentText="1.0.0"
+            app:contentTextColor="#999999"
+            app:titleContentSpace="@dimen/dimen_10"
+            app:titleDrawablePadding="@dimen/dimen_5"
+            app:titleIcon="@drawable/ic_update"
+            app:titleText="版本升级"
+            app:titleTextSize="@dimen/font_14sp"
+            app:topBorderWidth="@dimen/dimen_1" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <com.benshanyang.toolslibrary.widget.ClickableTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:minHeight="@dimen/dimen_40"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            app:backgroundColor="@android:color/white"
+            app:borderColor="#D5D5D5"
+            app:bottomBorderLeftSpace="@dimen/dimen_15"
+            app:bottomBorderPressedColor="@android:color/holo_red_dark"
+            app:bottomBorderRightSpace="@dimen/dimen_5"
+            app:bottomBorderWidth="@dimen/dimen_1"
+            app:contentDrawablePadding="@dimen/dimen_5"
+            app:contentLeftIcon="@drawable/ic_version"
+            app:contentRightIcon="@drawable/ic_more"
+            app:contentText="1.0.0"
+            app:contentTextColor="#999999"
+            app:titleContentSpace="@dimen/dimen_10"
+            app:titleDrawablePadding="@dimen/dimen_5"
+            app:titleIcon="@drawable/ic_update"
+            app:titleText="版本升级"
+            app:titleTextSize="@dimen/font_14sp"
+            app:topBorderLeftSpace="@dimen/dimen_15"
+            app:topBorderPressedColor="@android:color/holo_red_dark"
+            app:topBorderRightSpace="@dimen/dimen_5"
+            app:topBorderWidth="@dimen/dimen_1" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

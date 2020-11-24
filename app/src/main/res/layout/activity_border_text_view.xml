@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/activity_bgcolor"
+    tools:context=".activity.BorderTextViewActivity">
+
+    <com.benshanyang.toolslibrary.widget.TitleBarView
+        android:id="@+id/title_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:borderColor="#D5D5D5"
+        app:borderWidth="2px"
+        app:immersionStatusBar="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleBarHeight="?android:attr/actionBarSize"
+        app:titleText="BorderTextView"
+        app:titleTextSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar_view"
+        app:layout_constraintVertical_bias="0.03">
+
+        <com.benshanyang.toolslibrary.widget.BorderTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableRight="@drawable/ic_more"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="点我试试"
+            app:backgroundColor="@android:color/white"
+            app:borderColor="#D5D5D5"
+            app:bottomBorderLeftSpace="40dp"
+            app:bottomBorderRightSpace="0dp"
+            app:bottomBorderWidth="1dp"
+            app:topBorderLeftSpace="0dp"
+            app:topBorderNormalColor="#D5D5D5"
+            app:topBorderPressedColor="#FF0000"
+            app:topBorderRightSpace="0dp"
+            app:topBorderWidth="1dp" />
+
+        <com.benshanyang.toolslibrary.widget.BorderTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableRight="@drawable/ic_more"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="点我试试"
+            app:backgroundColor="@android:color/white"
+            app:bottomBorderLeftSpace="0dp"
+            app:bottomBorderNormalColor="#D5D5D5"
+            app:bottomBorderPressedColor="#FF0000"
+            app:bottomBorderRightSpace="0dp"
+            app:bottomBorderWidth="1dp"
+            app:topBorderVisibility="gone" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <com.benshanyang.toolslibrary.widget.BorderTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableRight="@drawable/ic_more"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="点我试试"
+            app:backgroundColor="@android:color/white"
+            app:borderColor="#D5D5D5"
+            app:bottomBorderWidth="1dp"
+            app:topBorderWidth="1dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <com.benshanyang.toolslibrary.widget.BorderTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableRight="@drawable/ic_more"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="点我试试"
+            app:backgroundColor="@android:color/white"
+            app:borderColor="#D5D5D5"
+            app:bottomBorderPressedColor="@android:color/holo_red_dark"
+            app:bottomBorderWidth="1dp"
+            app:topBorderPressedColor="@android:color/holo_red_dark"
+            app:topBorderWidth="1dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <com.benshanyang.toolslibrary.widget.BorderTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableRight="@drawable/ic_more"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="点我试试"
+            app:backgroundColor="@android:color/white"
+            app:bottomBorderLeftSpace="@dimen/dimen_48"
+            app:bottomBorderNormalColor="#D5D5D5"
+            app:bottomBorderPressedColor="@android:color/holo_red_dark"
+            app:bottomBorderWidth="1dp"
+            app:topBorderLeftSpace="@dimen/dimen_48"
+            app:topBorderNormalColor="#D5D5D5"
+            app:topBorderPressedColor="@android:color/holo_red_dark"
+            app:topBorderWidth="1dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <com.benshanyang.toolslibrary.widget.BorderTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableRight="@drawable/ic_more"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="点我试试"
+            app:backgroundColor="@android:color/white"
+            app:bottomBorderLeftSpace="@dimen/dimen_48"
+            app:bottomBorderNormalColor="#D5D5D5"
+            app:bottomBorderPressedColor="@android:color/holo_red_dark"
+            app:bottomBorderRightSpace="@dimen/dimen_5"
+            app:bottomBorderWidth="1dp"
+            app:topBorderLeftSpace="@dimen/dimen_48"
+            app:topBorderNormalColor="#D5D5D5"
+            app:topBorderPressedColor="@android:color/holo_red_dark"
+            app:topBorderRightSpace="@dimen/dimen_5"
+            app:topBorderWidth="1dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

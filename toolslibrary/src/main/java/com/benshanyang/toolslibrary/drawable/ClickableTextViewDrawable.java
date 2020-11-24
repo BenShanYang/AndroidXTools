@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
  * @version 1.0.0
  * @since
  */
-public class SelectableTextViewDrawable extends Drawable {
+public class ClickableTextViewDrawable extends Drawable {
 
     private Paint paint;//画笔
     private float width = 0f;//宽度
@@ -36,7 +36,7 @@ public class SelectableTextViewDrawable extends Drawable {
     @ColorInt
     private int bottomBorderColor = Color.TRANSPARENT;//下边框颜色
 
-    public SelectableTextViewDrawable() {
+    public ClickableTextViewDrawable() {
         init();
     }
 

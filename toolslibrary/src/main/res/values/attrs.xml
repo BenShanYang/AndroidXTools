@@ -48,6 +48,8 @@
     <attr name="iconColor" format="color" />
     <attr name="borderLeftSpace" format="dimension" />
     <attr name="borderRightSpace" format="dimension" />
+    <attr name="topBorderColor" format="color" />
+    <attr name="bottomBorderColor" format="color" />
 
     <!--搜索栏-->
     <declare-styleable name="SearchBarView">
@@ -88,8 +90,8 @@
         <attr name="digits" />
         <attr name="maxLength" />
         <attr name="backgroundColor" />
-        <attr name="topBorderColor" format="color" />
-        <attr name="bottomBorderColor" format="color" />
+        <attr name="topBorderColor" />
+        <attr name="bottomBorderColor" />
         <attr name="topBorderWidth" />
         <attr name="bottomBorderWidth" />
         <attr name="topBorderLeftSpace" />
@@ -99,7 +101,7 @@
         <attr name="editable" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="SelectableTextView">
+    <declare-styleable name="ClickableTextView">
         <attr name="titleIcon" />
         <attr name="contentRightIcon" format="reference" />
         <attr name="contentLeftIcon" format="reference" />
@@ -142,6 +144,15 @@
         <attr name="topBorderRightSpace" />
         <attr name="bottomBorderLeftSpace" />
         <attr name="bottomBorderRightSpace" />
+
+        <attr name="topBorderVisibility" format="enum">
+            <enum name="visible" value="0" />
+            <enum name="gone" value="1" />
+        </attr>
+        <attr name="bottomBorderVisibility" format="enum">
+            <enum name="visible" value="0" />
+            <enum name="gone" value="1" />
+        </attr>
     </declare-styleable>
 
     <!--简单的带清除功能的输入框-->
