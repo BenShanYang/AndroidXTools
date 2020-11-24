@@ -246,6 +246,26 @@
                 app:bottomBorderWidth="1px" />
 
             <com.benshanyang.toolslibrary.widget.BorderTextView
+                android:id="@+id/editable_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:clickable="true"
+                android:drawableLeft="@drawable/ic_widget"
+                android:drawableRight="@drawable/ic_more"
+                android:drawablePadding="@dimen/dimen_6"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:text="EditableTextView"
+                app:backgroundColor="@android:color/white"
+                app:borderColor="#D5D5D5"
+                app:bottomBorderLeftSpace="@dimen/dimen_15"
+                app:bottomBorderNormalColor="#D5D5D5"
+                app:bottomBorderPressedColor="#FF0000"
+                app:bottomBorderRightSpace="0dp"
+                app:bottomBorderWidth="1px" />
+
+            <com.benshanyang.toolslibrary.widget.BorderTextView
                 android:id="@+id/fingerprint"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"

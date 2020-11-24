@@ -2,6 +2,7 @@ package com.benshanyang.toolslibrary.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -10,11 +11,12 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -24,7 +26,6 @@ import androidx.annotation.Nullable;
 import com.benshanyang.toolslibrary.R;
 import com.benshanyang.toolslibrary.callback.TextWatchListener;
 import com.benshanyang.toolslibrary.drawable.EditableTextViewDrawable;
-import com.benshanyang.toolslibrary.utils.DensityUtils;
 import com.benshanyang.toolslibrary.utils.ResUtils;
 import com.benshanyang.toolslibrary.utils.TextUtils;
 
@@ -38,7 +39,7 @@ import static android.util.TypedValue.COMPLEX_UNIT_PX;
  * @version 1.0.0
  * @since
  */
-public class EditableTextView extends RelativeLayout {
+public class EditableTextView extends LinearLayout {
 
     private TextView textView;
     private EditText editText;
@@ -50,6 +51,9 @@ public class EditableTextView extends RelativeLayout {
     @ColorInt
     private int backgroundColor = Color.TRANSPARENT;//背景色
     private int maxLength = Integer.MAX_VALUE;//最大输入长度
+    private int defaultTextSize;//默认字体大小
+    private int titleTextSize;//标题文字大小
+    private int contentTextSize;//内容文字大小
     private float topBorderWidth = 0f;//上边框的粗细
     private float bottomBorderWidth = 0f;//下边框的粗细
     private float topBorderLeftSpace = 0f;//上边框距离左侧的距离
@@ -57,14 +61,14 @@ public class EditableTextView extends RelativeLayout {
     private float bottomBorderLeftSpace = 0f;//下边框距离左侧的距离
     private float bottomBorderRightSpace = 0f;//下边框距离右侧的距离
     private float titleDrawablePadding = 0f;//标题和Icon的间距
-    private float titleTextSize = 14f;//标题文字大小
-    private float contentTextSize = 14f;//内容文字大小
     private float titleContentSpace = 0f;//标题和内容的间距
     private boolean editable = true;//输入框是否可以编辑
-    private String titleText = "";//标题文字
-    private String contentText = "";//内容文字
-    private String hint = "";//提示文字
-    private String digits = "";//输入框的过滤条件
+    private int contentTextId = -1;
+    private int hintId = -1;
+    private CharSequence titleText = "";//标题文字
+    private CharSequence contentText = "";//内容文字
+    private CharSequence hint = "";//提示文字
+    private CharSequence digits = "";//输入框的过滤条件
     private Drawable titleIcon;//标题的Icon
     private ColorStateList titleTextColor;//标题文字颜色
     private ColorStateList contentTextColor;//内容文字颜色
@@ -96,25 +100,22 @@ public class EditableTextView extends RelativeLayout {
     }
 
     private void initWidget(Context context) {
+        defaultTextSize = sp2px(14f);
+        titleTextSize = defaultTextSize;//标题文字大小
+        contentTextSize = defaultTextSize;//内容文字大小
+
         FrameLayout frameLayout = new FrameLayout(context);
         textView = new TextView(context);
         editText = new EditText(context);
         frameLayout.addView(editText, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
-        textView.setId(R.id.tv_editabletextview_title);
-        editText.setId(R.id.et_editabletextview_content);
-
         textView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        editText.setPadding(0, 0, 0, 0);
+        editText.setPadding(2, 0, 2, 0);
         editText.setBackgroundColor(Color.TRANSPARENT);
-        editText.setGravity(Gravity.RIGHT);
+        editText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 
         LayoutParams textParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         LayoutParams editParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-        textParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        editParams.addRule(RelativeLayout.CENTER_VERTICAL | RelativeLayout.ALIGN_PARENT_RIGHT);
-        editParams.addRule(RelativeLayout.RIGHT_OF, textView.getId());
 
         textView.setLayoutParams(textParams);
         frameLayout.setLayoutParams(editParams);
@@ -135,25 +136,27 @@ public class EditableTextView extends RelativeLayout {
                     titleDrawablePadding = typedArray.getDimension(attr, 0f);
                 } else if (attr == R.styleable.EditableTextView_titleTextSize) {
                     //标题文字字号
-                    titleTextSize = typedArray.getDimension(attr, 14f);
+                    titleTextSize = typedArray.getDimensionPixelSize(attr, defaultTextSize);
                 } else if (attr == R.styleable.EditableTextView_titleTextColor) {
                     //标题文字颜色
                     titleTextColor = typedArray.getColorStateList(attr);
                 } else if (attr == R.styleable.EditableTextView_titleText) {
                     //标题文字
-                    titleText = typedArray.getString(attr);
+                    titleText = typedArray.getText(attr);
                 } else if (attr == R.styleable.EditableTextView_contentTextSize) {
                     //内容文字字号
-                    contentTextSize = typedArray.getDimension(attr, 14f);
+                    contentTextSize = typedArray.getDimensionPixelSize(attr, defaultTextSize);
                 } else if (attr == R.styleable.EditableTextView_contentTextColor) {
                     //内容文字颜色
                     contentTextColor = typedArray.getColorStateList(attr);
                 } else if (attr == R.styleable.EditableTextView_contentText) {
                     //内容文字
-                    contentText = typedArray.getString(attr);
+                    contentText = typedArray.getText(attr);
+                    contentTextId = typedArray.getResourceId(attr, Resources.ID_NULL);
                 } else if (attr == R.styleable.EditableTextView_hint) {
                     //提示文字
-                    hint = typedArray.getString(attr);
+                    hint = typedArray.getText(attr);
+                    hintId = typedArray.getResourceId(attr, Resources.ID_NULL);
                 } else if (attr == R.styleable.EditableTextView_textColorHint) {
                     //提示文字颜色
                     textColorHint = typedArray.getColorStateList(attr);
@@ -162,7 +165,7 @@ public class EditableTextView extends RelativeLayout {
                     titleContentSpace = typedArray.getDimension(attr, 0f);
                 } else if (attr == R.styleable.EditableTextView_digits) {
                     //输入框的过滤条件 只能是正则表达式
-                    digits = typedArray.getString(attr);
+                    digits = typedArray.getText(attr);
                 } else if (attr == R.styleable.EditableTextView_maxLength) {
                     //最大输入的长度
                     maxLength = typedArray.getInteger(attr, Integer.MAX_VALUE);
@@ -211,7 +214,7 @@ public class EditableTextView extends RelativeLayout {
                     if (TextUtils.isEmpty(digits)) {
                         //如果没有匹配条件就不去匹配
                         return null;
-                    } else if (inputStr.matches(digits)) {
+                    } else if (inputStr.matches(digits.toString())) {
                         //设置了匹配条件 且符合匹配条件
                         return null;
                     } else {
@@ -230,24 +233,36 @@ public class EditableTextView extends RelativeLayout {
             if (titleTextColor != null) {
                 textView.setTextColor(titleTextColor);
             }
-            textView.setTextSize(DensityUtils.px2sp(context, titleTextSize));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
             TextUtils.setDrawable(textView, titleText, titleIcon, (int) titleDrawablePadding, com.benshanyang.toolslibrary.constant.Gravity.LEFT);
         }
 
         if (editText != null) {
             //设置过滤器
-            editText.setFilters(new InputFilter[]{inputFilter, new InputFilter.LengthFilter(maxLength)});
-            editText.setText(contentText);
             if (contentTextColor != null) {
                 editText.setTextColor(contentTextColor);
             }
             if (textColorHint != null) {
                 editText.setHintTextColor(textColorHint);
             }
-            editText.setHint(hint);
-            editText.setTextSize(DensityUtils.px2sp(context, contentTextSize));
+
+            if (!TextUtils.isEmpty(hint)) {
+                editText.setHint(hint);
+            }
+            if (hintId != Resources.ID_NULL) {
+                editText.setHint(hintId);
+            }
+            if (!TextUtils.isEmpty(contentText)) {
+                editText.setText(contentText);
+            }
+            if (contentTextId != Resources.ID_NULL) {
+                editText.setText(contentTextId);
+            }
+            editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
             editText.setEnabled(editable);
             ((FrameLayout.LayoutParams) editText.getLayoutParams()).leftMargin = (int) titleContentSpace;
+
+            editText.setFilters(new InputFilter[]{inputFilter, new InputFilter.LengthFilter(maxLength)});
 
             editText.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
@@ -478,7 +493,7 @@ public class EditableTextView extends RelativeLayout {
      *
      * @param titleTextSize 字号
      */
-    public void setTitleTextSize(float titleTextSize) {
+    public void setTitleTextSize(int titleTextSize) {
         this.titleTextSize = titleTextSize;
         if (textView != null) {
             textView.setTextSize(COMPLEX_UNIT_PX, titleTextSize);
@@ -490,7 +505,7 @@ public class EditableTextView extends RelativeLayout {
      *
      * @param contentTextSize 内容文字的字号
      */
-    public void setContentTextSize(float contentTextSize) {
+    public void setContentTextSize(int contentTextSize) {
         this.contentTextSize = contentTextSize;
         if (editText != null) {
             editText.setTextSize(COMPLEX_UNIT_PX, contentTextSize);
@@ -634,4 +649,16 @@ public class EditableTextView extends RelativeLayout {
             editText.setHintTextColor(textColorHint);
         }
     }
+
+    /**
+     * 将sp值转换为px值，保证文字大小不变
+     *
+     * @param spValue
+     * @return
+     */
+    private int sp2px(float spValue) {
+        final float fontScale = getContext().getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+
 }
