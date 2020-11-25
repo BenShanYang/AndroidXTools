@@ -6,14 +6,17 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -152,11 +155,15 @@ public class EditableTextView extends LinearLayout {
                 } else if (attr == R.styleable.EditableTextView_contentText) {
                     //内容文字
                     contentText = typedArray.getText(attr);
-                    contentTextId = typedArray.getResourceId(attr, Resources.ID_NULL);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        contentTextId = typedArray.getResourceId(attr, Resources.ID_NULL);
+                    }
                 } else if (attr == R.styleable.EditableTextView_hint) {
                     //提示文字
                     hint = typedArray.getText(attr);
-                    hintId = typedArray.getResourceId(attr, Resources.ID_NULL);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        hintId = typedArray.getResourceId(attr, Resources.ID_NULL);
+                    }
                 } else if (attr == R.styleable.EditableTextView_textColorHint) {
                     //提示文字颜色
                     textColorHint = typedArray.getColorStateList(attr);
@@ -249,15 +256,20 @@ public class EditableTextView extends LinearLayout {
             if (!TextUtils.isEmpty(hint)) {
                 editText.setHint(hint);
             }
-            if (hintId != Resources.ID_NULL) {
+            if (hintId != Resources.ID_NULL && hintId != -1) {
                 editText.setHint(hintId);
             }
             if (!TextUtils.isEmpty(contentText)) {
                 editText.setText(contentText);
             }
-            if (contentTextId != Resources.ID_NULL) {
+            if (contentTextId != Resources.ID_NULL && contentTextId != -1) {
                 editText.setText(contentTextId);
             }
+            CharSequence contentStr = editText.getText();
+            if (!TextUtils.isEmpty(contentStr)) {
+                editText.setSelection(contentStr.length());
+            }
+
             editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
             editText.setEnabled(editable);
             ((FrameLayout.LayoutParams) editText.getLayoutParams()).leftMargin = (int) titleContentSpace;
@@ -636,6 +648,65 @@ public class EditableTextView extends LinearLayout {
         if (editText != null) {
             editText.setHintTextColor(textColorHint);
         }
+    }
+
+    /**
+     * 隐藏软键盘
+     *
+     * @return 是否隐藏成功
+     */
+    public boolean hideKeyboard() {
+        boolean isHide = false;
+        if (null != getEditText()) {
+            InputMethodManager inputManager = (InputMethodManager) getEditText().getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            // 即使当前焦点不在editText，也是可以隐藏的。
+            isHide = inputManager.hideSoftInputFromWindow(getEditText().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        return isHide;
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showKeyboard() {
+        showKeyboard(0);
+    }
+
+    /**
+     * 显示软键盘
+     *
+     * @param delay 延时显示软键盘延时的毫秒数
+     */
+    public void showKeyboard(int delay) {
+        if (null != getEditText()) {
+            if (getEditText().requestFocus()) {
+                if (delay > 0) {
+                    getEditText().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getEditText().getContext().getApplicationContext()
+                                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    }, delay);
+                } else {
+                    InputMethodManager imm = (InputMethodManager) getEditText().getContext().getApplicationContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                }
+            } else {
+                Log.w("PasswordEditText", "showSoftInput() can not get focus");
+            }
+        }
+    }
+
+    /**
+     * 获取输入框控件 用于显示或隐藏键盘
+     *
+     * @return 返回的输入框控件
+     */
+    public EditText getEditText() {
+        return editText;
     }
 
     /**

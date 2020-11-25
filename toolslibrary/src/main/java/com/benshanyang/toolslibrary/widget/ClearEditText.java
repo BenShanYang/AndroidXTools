@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -100,8 +101,15 @@ public class ClearEditText extends FrameLayout {
 
             CharSequence text = typedArray.getText(R.styleable.ClearEditText_android_text);//设置输入框文字
             CharSequence hint = typedArray.getText(R.styleable.ClearEditText_android_hint);//提示文字
-            int mTextId = typedArray.getResourceId(R.styleable.ClearEditText_android_text, Resources.ID_NULL);
-            int mHintId = typedArray.getResourceId(R.styleable.ClearEditText_android_hint, Resources.ID_NULL);
+            int mTextId = -1;
+            int mHintId = -1;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mTextId = typedArray.getResourceId(R.styleable.ClearEditText_android_text, Resources.ID_NULL);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mHintId = typedArray.getResourceId(R.styleable.ClearEditText_android_hint, Resources.ID_NULL);
+            }
 
             Drawable icon = typedArray.getDrawable(R.styleable.ClearEditText_android_icon);//输入框最左侧小图标
             Drawable iconClear = typedArray.getDrawable(R.styleable.ClearEditText_iconClear);//输入框最左侧小图标
@@ -169,14 +177,14 @@ public class ClearEditText extends FrameLayout {
                 if (!TextUtils.isEmpty(text)) {
                     etInput.setText(text);
                 }
-                if (mTextId != Resources.ID_NULL) {
+                if (mTextId != -1 && mTextId != Resources.ID_NULL) {
                     etInput.setText(mTextId);
                 }
                 //设置提示文字
                 if (!TextUtils.isEmpty(hint)) {
                     etInput.setHint(hint);
                 }
-                if (mHintId != Resources.ID_NULL) {
+                if (mHintId != -1 && mHintId != Resources.ID_NULL) {
                     etInput.setHint(mHintId);
                 }
                 //设置提示文字颜色

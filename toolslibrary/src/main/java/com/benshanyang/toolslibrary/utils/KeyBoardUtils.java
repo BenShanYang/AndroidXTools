@@ -24,8 +24,11 @@ public class KeyBoardUtils {
     private static final String TAG = "QMUIKeyboardHelper";
     public final static int KEYBOARD_VISIBLE_THRESHOLD_DP = 100;
 
+    public static void showKeyboard(EditText editText) {
+        showKeyboard(editText, 0);
+    }
 
-    public static void showKeyboard(final EditText editText, boolean delay) {
+    public static void showKeyboard(EditText editText, boolean delay) {
         showKeyboard(editText, delay ? SHOW_KEYBOARD_DELAY_TIME : 0);
     }
 

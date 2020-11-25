@@ -10,7 +10,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.EditableTextViewActivity"></activity>
+        <activity android:name=".activity.RoundButtonActivity"></activity>
+        <activity
+            android:name=".activity.SearchBarViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activity.EditableTextViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activity.ClickableTextViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"

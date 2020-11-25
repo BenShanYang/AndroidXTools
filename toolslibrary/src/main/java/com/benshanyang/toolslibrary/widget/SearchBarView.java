@@ -2,28 +2,34 @@ package com.benshanyang.toolslibrary.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 
 import com.benshanyang.toolslibrary.R;
 import com.benshanyang.toolslibrary.callback.TextWatchListener;
 import com.benshanyang.toolslibrary.constant.Gravity;
 import com.benshanyang.toolslibrary.drawable.SearchBarViewDrawable;
-import com.benshanyang.toolslibrary.utils.DensityUtils;
 import com.benshanyang.toolslibrary.utils.ResUtils;
 import com.benshanyang.toolslibrary.utils.TextUtils;
 
@@ -57,14 +63,16 @@ public class SearchBarView extends LinearLayout {
     private int maxLength = Integer.MAX_VALUE;//最大输入字数
     private boolean isShowBorder = false;//是否显示边框
     private boolean isShowActionButton = false;//是否显示最右侧的按钮
-    private float textSize = 28f;//输入框文字字号
+    private float textSize;//输入框文字字号
     private float editIconPadding;//左侧图片和文字的间距
     private float cornerRadius = 0f;//圆角半径
     private float borderWidth = 0f;//边框的宽度
 
+    private int hintId = -1;
+    private int textId = -1;
     private String digits = "";//过滤条件
-    private String hint = "";//提示文字
-    private String text = "";//内容文字
+    private CharSequence hint = "";//提示文字
+    private CharSequence text = "";//内容文字
     private ColorStateList textColor;//文字颜色
     private ColorStateList textColorHint;//提示文字颜色
     private Drawable actionIcon;//右侧功能按钮图片
@@ -97,20 +105,25 @@ public class SearchBarView extends LinearLayout {
     }
 
     private void initWidget(Context context) {
+        textSize = sp2px(14f);
         setOrientation(HORIZONTAL);
 
         editText = new EditText(context);
         imageButton = new ImageButton(context);
 
-        editText.setPadding(0, 0, 0, 0);
+        editText.setPadding(dp2px(1), 0, dp2px(1), 0);
         editText.setBackgroundColor(Color.TRANSPARENT);
         imageButton.setBackgroundColor(Color.TRANSPARENT);
         imageButton.setImageResource(R.drawable.ic_clear);
 
+        FrameLayout actionLayout = new FrameLayout(context);
+        actionLayout.addView(new View(context), new FrameLayout.LayoutParams(dp2px(16), FrameLayout.LayoutParams.MATCH_PARENT, android.view.Gravity.CENTER));
+        actionLayout.addView(imageButton, new FrameLayout.LayoutParams(dp2px(40), FrameLayout.LayoutParams.MATCH_PARENT, android.view.Gravity.CENTER));
+
         LayoutParams editParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         editParams.weight = 1;
         addView(editText, editParams);
-        addView(imageButton, new LayoutParams(DensityUtils.dp2px(context, 40), LayoutParams.MATCH_PARENT));
+        addView(actionLayout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
         setBackground(drawable = new SearchBarViewDrawable());
     }
 
@@ -121,10 +134,16 @@ public class SearchBarView extends LinearLayout {
                 int attr = typedArray.getIndex(i);
                 if (attr == R.styleable.SearchBarView_hint) {
                     //提示文字
-                    hint = typedArray.getString(attr);
+                    hint = typedArray.getText(attr);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        hintId = typedArray.getResourceId(attr, Resources.ID_NULL);
+                    }
                 } else if (attr == R.styleable.SearchBarView_text) {
                     //设置内容文字
-                    text = typedArray.getString(attr);
+                    text = typedArray.getText(attr);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        textId = typedArray.getResourceId(attr, Resources.ID_NULL);
+                    }
                 } else if (attr == R.styleable.SearchBarView_textColor) {
                     //设置文字颜色
                     textColor = typedArray.getColorStateList(attr);
@@ -133,7 +152,7 @@ public class SearchBarView extends LinearLayout {
                     textColorHint = typedArray.getColorStateList(attr);
                 } else if (attr == R.styleable.SearchBarView_textSize) {
                     //设置文字字号
-                    textSize = typedArray.getDimension(attr, 28f);
+                    textSize = typedArray.getDimensionPixelSize(attr, sp2px(14f));
                 } else if (attr == R.styleable.SearchBarView_actionIcon) {
                     //右侧功能按钮图片
                     actionIcon = typedArray.getDrawable(attr);
@@ -211,12 +230,7 @@ public class SearchBarView extends LinearLayout {
         if (editText != null) {
             editText.setSingleLine();
             editText.setGravity(android.view.Gravity.CENTER_VERTICAL);
-            if (TextUtils.isEmpty(text)) {
-                editText.setHint(hint);
-            } else {
-                editText.setText(text);
-            }
-            editText.setTextSize(DensityUtils.px2sp(context, textSize));
+            editText.setTextSize(COMPLEX_UNIT_PX, textSize);
             if (textColor != null) {
                 editText.setTextColor(textColor);
             }
@@ -278,10 +292,29 @@ public class SearchBarView extends LinearLayout {
                 }
             });
 
+            if (hintId != -1 && hintId != Resources.ID_NULL) {
+                editText.setHint(hintId);
+            }
+            if (!TextUtils.isEmpty(hint)) {
+                editText.setHint(hint);
+            }
+            if (textId != -1 && textId != Resources.ID_NULL) {
+                editText.setText(textId);
+            }
+            if (!TextUtils.isEmpty(text)) {
+                editText.setText(text);
+            }
+
+            CharSequence contentStr = editText.getText();
+            if (!TextUtils.isEmpty(contentStr)) {
+                editText.setSelection(contentStr.length());
+            }
         }
 
         if (imageButton != null) {
-            imageButton.setImageDrawable(actionIcon);
+            if (actionIcon != null) {
+                imageButton.setImageDrawable(actionIcon);
+            }
             imageButton.setVisibility(isShowActionButton ? VISIBLE : GONE);
         }
 
@@ -473,6 +506,26 @@ public class SearchBarView extends LinearLayout {
     }
 
     /**
+     * 获取右侧功能按钮控件
+     *
+     * @return
+     */
+    public ImageButton getActionIconButton() {
+        return imageButton;
+    }
+
+    /**
+     * 设置右侧功能按钮显示和隐藏
+     *
+     * @param visibility
+     */
+    public void setActionIconVisibility(int visibility) {
+        if (imageButton != null) {
+            imageButton.setVisibility(visibility);
+        }
+    }
+
+    /**
      * 设置右侧的Icon
      *
      * @param actionIcon
@@ -513,10 +566,22 @@ public class SearchBarView extends LinearLayout {
      *
      * @param hint 提示文字
      */
-    public void setHint(String hint) {
+    public void setHint(CharSequence hint) {
         this.hint = hint;
         if (editText != null) {
             editText.setHint(hint);
+        }
+    }
+
+    /**
+     * 设置提示文字
+     *
+     * @param resid 提示文字资源id
+     */
+    public void setHint(@StringRes int resid) {
+        this.hintId = resid;
+        if (editText != null) {
+            editText.setHint(resid);
         }
     }
 
@@ -525,10 +590,22 @@ public class SearchBarView extends LinearLayout {
      *
      * @param text 内容
      */
-    public void setText(String text) {
+    public void setText(CharSequence text) {
         this.text = text;
         if (editText != null) {
             editText.setText(text);
+        }
+    }
+
+    /**
+     * 设置内容文字
+     *
+     * @param resid 内容资源id
+     */
+    public void setText(@StringRes int resid) {
+        this.textId = resid;
+        if (editText != null) {
+            editText.setText(resid);
         }
     }
 
@@ -594,6 +671,65 @@ public class SearchBarView extends LinearLayout {
     }
 
     /**
+     * 隐藏软键盘
+     *
+     * @return 是否隐藏成功
+     */
+    public boolean hideKeyboard() {
+        boolean isHide = false;
+        if (null != getEditText()) {
+            InputMethodManager inputManager = (InputMethodManager) getEditText().getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            // 即使当前焦点不在editText，也是可以隐藏的。
+            isHide = inputManager.hideSoftInputFromWindow(getEditText().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        return isHide;
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showKeyboard() {
+        showKeyboard(0);
+    }
+
+    /**
+     * 显示软键盘
+     *
+     * @param delay 延时显示软键盘延时的毫秒数
+     */
+    public void showKeyboard(int delay) {
+        if (null != getEditText()) {
+            if (getEditText().requestFocus()) {
+                if (delay > 0) {
+                    getEditText().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getEditText().getContext().getApplicationContext()
+                                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    }, delay);
+                } else {
+                    InputMethodManager imm = (InputMethodManager) getEditText().getContext().getApplicationContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(getEditText(), InputMethodManager.SHOW_IMPLICIT);
+                }
+            } else {
+                Log.w("PasswordEditText", "showSoftInput() can not get focus");
+            }
+        }
+    }
+
+    /**
+     * 获取输入框控件 用于显示或隐藏键盘
+     *
+     * @return 返回的输入框控件
+     */
+    public EditText getEditText() {
+        return editText;
+    }
+
+    /**
      * 设置输入监听
      *
      * @param textWatchListener 输入监听回调接口
@@ -649,6 +785,28 @@ public class SearchBarView extends LinearLayout {
      */
     public interface OnTextChangedListener {
         void onChanged(Editable s, EditText editText, ImageButton imageButton);
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     *
+     * @param dpValue
+     * @return
+     */
+    private int dp2px(float dpValue) {
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 将sp值转换为px值，保证文字大小不变
+     *
+     * @param spValue
+     * @return
+     */
+    private int sp2px(float spValue) {
+        final float fontScale = getContext().getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
     }
 
 }
